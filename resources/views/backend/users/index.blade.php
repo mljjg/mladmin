@@ -105,6 +105,8 @@
                 , cols: [[ //表头
                     {type: 'checkbox', fixed: 'left'}
                     , {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                    , {field: 'email', title: '邮箱', width: 200}
+                    , {field: 'username', title: '用户名', width: 120}
                     , {field: 'name', title: '昵称', width: 120}
                     , {
                         field: 'sex', title: '性别', width: 80, sort: true
@@ -118,7 +120,7 @@
                             return txt;
                         }
                     }
-                    , {field: 'email', title: '邮箱', width: 200}
+
                     , {
                         field: 'status', title: '状态', width: 80, sort: true
                         , templet: function (d) {

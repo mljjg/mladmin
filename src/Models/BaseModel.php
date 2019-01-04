@@ -17,8 +17,8 @@ class BaseModel extends Model
     protected $guarded = [];
 
     //    const DELETED_AT='deleted_at';
-    const UPDATED_AT = 'updated_sec';
-    const CREATED_AT = 'created_sec';
+//    const UPDATED_AT = 'updated_at';
+//    const CREATED_AT = 'created_at';
 
     /**
      * 指定时间字符
@@ -26,9 +26,9 @@ class BaseModel extends Model
      * @param  DateTime|int $value
      * @return string
      */
-    public function fromDateTime($value)
-    {
-        return strtotime(parent::fromDateTime($value));
-    }
+//    public function fromDateTime($value)
+//    {
+//        return strtotime(parent::fromDateTime($value));
+//    }
 
 }

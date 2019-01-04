@@ -33,8 +33,8 @@ class User extends Authenticatable
     ];
 
     //    const DELETED_AT='deleted_at';
-    const UPDATED_AT = 'updated_sec';
-    const CREATED_AT = 'created_sec';
+//    const UPDATED_AT = 'updated_sec';
+//    const CREATED_AT = 'created_sec';
 
     /**
      * 指定时间字符
@@ -42,10 +42,10 @@ class User extends Authenticatable
      * @param  DateTime|int $value
      * @return string
      */
-    public function fromDateTime($value)
-    {
-        return strtotime(parent::fromDateTime($value));
-    }
+//    public function fromDateTime($value)
+//    {
+//        return strtotime(parent::fromDateTime($value));
+//    }
 
     /**
      * 返回完整的头像地址

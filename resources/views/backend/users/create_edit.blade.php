@@ -13,10 +13,17 @@
             {{--防跨越--}}
             {{ csrf_field() }}
             <div class="layui-form-item">
-                <label class="layui-form-label">用户</label>
+                <label class="layui-form-label">昵称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="name" required lay-verify="required" placeholder="请输入用户名"
+                    <input type="text" name="name" required lay-verify="required" placeholder="请输入昵称"
                            autocomplete="off" class="layui-input" value="{{ old('name',$user->name) }}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">账号名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" required lay-verify="required" placeholder="请输入用户名"
+                           autocomplete="off" class="layui-input" value="{{ old('username',$user->username) }}">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -51,6 +58,16 @@
                            @if(old('sex',$user->sex) == 1) checked="checked" @endif>
                     <input type="radio" name="sex" value="0" title="女"
                            @if(old('sex',$user->sex) == 0) checked="checked" @endif>
+                    {{--<input type="radio" name="sex" value="" title="中性" disabled>--}}
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">登录后台</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="bool_admin" value="1" title="允许"
+                           @if(old('bool_admin',$user->bool_admin) == 1) checked="checked" @endif>
+                    <input type="radio" name="bool_admin" value="0" title="不允许"
+                           @if(old('bool_admin',$user->bool_admin) == 0) checked="checked" @endif>
                     {{--<input type="radio" name="sex" value="" title="中性" disabled>--}}
                 </div>
             </div>
