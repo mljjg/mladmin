@@ -2,7 +2,8 @@
     "name": "jjg/admin",
     "description": "A package for laravel backend dev start",
     "require": {
-        "doctrine/dbal": "^2.9"
+        "doctrine/dbal": "^2.9",
+        "spatie/laravel-permission": "^2.29"
     },
     "license": "MIT",
     "authors": [

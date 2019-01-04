@@ -87,3 +87,5 @@ class User extends \Ml\Models\User
 }
 
 ```
+
+#### 依赖 spatie/laravel-permission 实现用户权限控制

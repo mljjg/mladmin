@@ -3,10 +3,11 @@
 @section('title', $title = $user->id ? '编辑用户' : '添加用户' )
 
 @section('breadcrumb')
-    <a href="{{route('admin.dashboard')}}">首页</a>
+    <a>系统设置</a>
     <a href="{{ route('admin.users') }}">用户列表</a>
     <a><cite>{{$title}}</cite></a>
 @endsection
+
 @section('content')
     <div style="padding: 15px;">
         <div class="layui-form">
@@ -69,6 +70,15 @@
                     <input type="radio" name="bool_admin" value="0" title="不允许"
                            @if(old('bool_admin',$user->bool_admin) == 0) checked="checked" @endif>
                     {{--<input type="radio" name="sex" value="" title="中性" disabled>--}}
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">角色</label>
+                <div class="layui-input-block">
+                    @foreach($roles as $key => $val)
+                        <input type="checkbox" name="roles[]" value="{{ $val }}" title="{{ $key }}" @if(in_array($val,$userRoles) || in_array($val, old('roles',[]))) checked="checked" @endif required >
+
+                    @endforeach
                 </div>
             </div>
 

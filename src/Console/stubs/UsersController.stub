@@ -2,10 +2,11 @@
 
 namespace DummyNamespace;
 
+use App\User;
 use Illuminate\Http\Request;
-use Ml\Models\User;
 use Ml\Requests\Ajax\UserRequest;
 use Ml\Response\Result;
+use Spatie\Permission\Models\Role;
 
 class UsersController extends BaseController
 {
@@ -32,14 +33,19 @@ class UsersController extends BaseController
         }
 
         //每页数量
-        $per_page = $request->get('limit') ? $request->get('limit') : 10;
+        $per_page = $request->get('limit') ? $request->get('limit') : config('admin.paginate.limit');;
         if ($per_page > 100) {
             //限制最大100
             $per_page = 100;
         }
         $query = $query->orderBy('id', 'desc');
+        $query->with('roles');
+
         $data = $query->paginate($per_page);
         $data->withPath($request->fullUrl());
+
+//        $userRoles = $user->roles()->pluck('name', 'name')->toArray();
+
         $result->succeed($data);
 
         return $result->toArray();
@@ -52,7 +58,10 @@ class UsersController extends BaseController
      */
     public function create(User $user)
     {
-        return $this->backend_view('users.create_edit', compact('user'));
+        $roles = Role::get()->pluck('name', 'remarks')->toArray();
+        $userRoles = [];
+
+        return $this->backend_view('users.create_edit', compact('user', 'roles', 'userRoles'));
     }
 
     /**
@@ -65,11 +74,16 @@ class UsersController extends BaseController
     {
 
         try {
-            $data = $request->only(['name', 'email', 'password', 'status', 'sex']);
+            $data = $request->only(['name', 'username', 'email', 'password', 'status', 'sex', 'bool_admin']);
 
             $data['password'] = bcrypt($data['password']);
 
             $user = User::create($data);
+
+            $roles = $request->input('roles') ? $request->input('roles') : [];
+            $user->assignRole($roles);
+            // 要求：User和配置的 auth.default.guard 对应的provider 使用的 user model 为同一个类
+            //（因为 Role 默认的guard为配置）
 
             $result->succeed($user);
         } catch (\Exception $exception) {
@@ -89,8 +103,11 @@ class UsersController extends BaseController
     public function edit($id)
     {
         $user = User::find($id);
+        $roles = Role::get()->pluck('name', 'remarks')->toArray();
+        $userRoles = $user->roles()->pluck('name', 'name')->toArray();
 
-        return $this->backend_view('users.create_edit', compact('user'));
+
+        return $this->backend_view('users.create_edit', compact('user', 'roles', 'userRoles'));
     }
 
     /**
@@ -103,14 +120,15 @@ class UsersController extends BaseController
      */
     public function update(UserRequest $request, $id, Result $result)
     {
-//        $id = $request->get('id');
         $user = User::find($id);
-        $user->fill($request->all());
-        $upd = $user->save();
-        if ($upd)
-            $result->succeed($user);
-        else
-            $result->failed('更新失败');
+        $data = $request->only(['name', 'username', 'email', 'password', 'status', 'sex', 'bool_admin']);
+        $user->update($data);
+//        \Log::info(__FUNCTION__.':'.print_r($user,true));
+        $roles = $request->input('roles') ? $request->input('roles') : [];
+        \Log::info(__FUNCTION__ . ':' . print_r($roles, true));
+        $user->syncRoles($roles);
+
+        $result->succeed($user);
 
         return $result->toArray();
     }

@@ -62,6 +62,25 @@ Route::group([
     $router->get('users/destroy/{id}', 'UsersController@destroy')->name('admin.users.destroy');
     $router->post('users/destroyBat', 'UsersController@destroyBat')->name('admin.users.destroyBat');
 
+    ## 权限
+    $router->get('permissions', 'PermissionsController@index')->name('admin.permissions');
+    $router->get('permissions/list', 'PermissionsController@list')->name('admin.permissions.list');
+    $router->get('permissions/create', 'PermissionsController@create')->name('admin.permissions.create');
+    $router->post('permissions/store', 'PermissionsController@store')->name('admin.permissions.store');
+    $router->get('permissions/edit/{id}', 'PermissionsController@edit')->name('admin.permissions.edit');
+    $router->post('permissions/update/{id}', 'PermissionsController@update')->name('admin.permissions.update');
+    $router->get('permissions/destroy/{id}', 'PermissionsController@destroy')->name('admin.permissions.destroy');
+    $router->post('permissions/destroyBat', 'PermissionsController@destroyBat')->name('admin.permissions.destroyBat');
+
+    ## 角色
+    $router->get('roles', 'RolesController@index')->name('admin.roles');
+    $router->get('roles/list', 'RolesController@list')->name('admin.roles.list');
+    $router->get('roles/create', 'RolesController@create')->name('admin.roles.create');
+    $router->post('roles/store', 'RolesController@store')->name('admin.roles.store');
+    $router->get('roles/edit/{id}', 'RolesController@edit')->name('admin.roles.edit');
+    $router->post('roles/update/{id}', 'RolesController@update')->name('admin.roles.update');
+    $router->get('roles/destroy/{id}', 'RolesController@destroy')->name('admin.roles.destroy');
+    $router->post('roles/destroyBat', 'RolesController@destroyBat')->name('admin.roles.destroyBat');
 
 });
 
