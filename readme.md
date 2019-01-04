@@ -3,11 +3,26 @@
 Installation
 ------------
 
+> This package requires PHP 7+ and Laravel 5.5
 
-```bash
+First, install laravel 5.5, and make sure that the database connection settings are correct.
+
+```
 composer require jjg/admin
 ```
 
+Then run these commands to publish assets and config：
+
+```
+php artisan vendor:publish --provider="Ml\Providers\MlServiceProvider"
+```
+
+After run command you can find config file in `config/admin.php`, in this file you can change the install directory,db connection or table names.
+
+At last run following command to finish install.
+```
+php artisan mlAdmin:install
+```
 
 重写异常类的 unauthenticated 方法：app/Exceptions/Handler.php
 ```php

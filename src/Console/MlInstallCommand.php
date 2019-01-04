@@ -56,7 +56,7 @@ class MlInstallCommand extends Command
     public function handle()
     {
         //初始化数据库
-//        $this->initDatabase();
+        $this->initDatabase();
         //初始化 admin 目录
         $this->initAdminDirectory();
 

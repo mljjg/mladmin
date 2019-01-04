@@ -41,8 +41,6 @@ class MlServiceProvider extends ServiceProvider
             $this->publishes([__DIR__ . '/../config/admin.php' => config_path('admin.php')], 'ml-admin-config');
             ## database migration
             $this->publishes([__DIR__ . '/../database/migrations' => database_path('migrations')], 'ml-admin-migrations');
-            ## 路由
-            $this->publishes([__DIR__ . '/../src/routes/admin.php' => base_path('routes/admin.php')], 'ml-admin-route');
         }
 
     }
