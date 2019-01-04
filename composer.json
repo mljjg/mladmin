@@ -1,0 +1,27 @@
+{
+    "name": "jjg/admin",
+    "description": "A package for laravel backend dev start",
+    "require": {
+        "doctrine/dbal": "^2.9"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "JJGMAC",
+            "email": "378823123@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Ml\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ml\\Providers\\MlServiceProvider"
+            ]
+        }
+    }
+}

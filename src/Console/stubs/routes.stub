@@ -1,0 +1,68 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: jjg
+ * Date: 2018-12-27
+ * Time: 15:14
+ */
+
+
+/*
+ * -------------------------------------------------------------------------
+ * 后台不需要需要认证相关路由
+ * -------------------------------------------------------------------------
+ */
+
+use Illuminate\Routing\Router;
+
+//use Illuminate\Support\Facades\Route;
+
+Route::group([
+    'prefix' => config('admin.route.prefix'),
+    'namespace' => config('admin.route.namespace'),
+    'middleware' => ['web']
+], function (Router $router) {
+
+    # 登录页面
+    $router->get('login', 'LoginController@showLoginForm')->name('admin.login');
+
+    # 登录request
+    $router->post('login', 'LoginController@login');
+
+    # 退出
+    $router->get('logout', 'LoginController@logout')->name('admin.logout');
+
+    # 无权限提示
+    $router->get('permission-denied', 'WelcomeController@permissionDenied')->name('admin.permission-denied');
+
+
+});
+
+
+/*
+ * -------------------------------------------------------------------------
+ * 后台需要认证相关路由
+ * -------------------------------------------------------------------------
+ */
+Route::group([
+    'prefix' => config('admin.route.prefix'),
+    'namespace' => config('admin.route.namespace'),
+    'middleware' => config('admin.route.middleware'),
+], function (Router $router) {
+    # 首页
+    $router->get('/', 'WelcomeController@dashboard')->name('admin.dashboard');
+
+    # 用户
+    $router->get('users', 'UsersController@index')->name('admin.users');
+    $router->get('users/create', 'UsersController@create')->name('admin.users.create');
+    $router->get('users/list', 'UsersController@list')->name('admin.users.list');
+    $router->post('users/store', 'UsersController@store')->name('admin.users.store');
+    $router->get('users/edit/{id}', 'UsersController@edit')->name('admin.users.edit');
+    $router->post('users/update/{id}', 'UsersController@update')->name('admin.users.update');
+    $router->get('users/destroy/{id}', 'UsersController@destroy')->name('admin.users.destroy');
+    $router->post('users/destroyBat', 'UsersController@destroyBat')->name('admin.users.destroyBat');
+
+
+});
+
+

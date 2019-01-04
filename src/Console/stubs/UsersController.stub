@@ -1,0 +1,167 @@
+<?php
+
+namespace DummyNamespace;
+
+use Illuminate\Http\Request;
+use Ml\Models\User;
+use Ml\Requests\Ajax\UserRequest;
+use Ml\Response\Result;
+
+class UsersController extends BaseController
+{
+    //
+    public function index()
+    {
+        return $this->backend_view('users.index');
+    }
+
+    /**
+     *
+     * @param Request $request
+     * @param Result $result
+     * @return array
+     */
+    public function list(Request $request, Result $result)
+    {
+        $query = User::query();
+        $queryFields = ['name', 'email'];
+        foreach ($queryFields as $queryField) {
+            if ($request->get($queryField)) {
+                $query = $query->where($queryField, $request->get($queryField));
+            }
+        }
+
+        //每页数量
+        $per_page = $request->get('limit') ? $request->get('limit') : 10;
+        if ($per_page > 100) {
+            //限制最大100
+            $per_page = 100;
+        }
+        $query = $query->orderBy('id', 'desc');
+        $data = $query->paginate($per_page);
+        $data->withPath($request->fullUrl());
+        $result->succeed($data);
+
+        return $result->toArray();
+    }
+
+    /**
+     * 新增页面
+     * @param User $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function create(User $user)
+    {
+        return $this->backend_view('users.create_edit', compact('user'));
+    }
+
+    /**
+     * 添加
+     * @param UserRequest $request
+     * @param Result $result
+     * @return array
+     */
+    public function store(UserRequest $request, Result $result)
+    {
+
+        try {
+            $data = $request->only(['name', 'email', 'password', 'status', 'sex']);
+
+            $data['password'] = bcrypt($data['password']);
+
+            $user = User::create($data);
+
+            $result->succeed($user);
+        } catch (\Exception $exception) {
+            $result->failed($exception->getMessage());
+        }
+
+        return $result->toArray();
+
+    }
+
+    /**
+     * 编辑
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function edit($id)
+    {
+        $user = User::find($id);
+
+        return $this->backend_view('users.create_edit', compact('user'));
+    }
+
+    /**
+     * 更新
+     *
+     * @param UserRequest $request
+     * @param $id
+     * @param Result $result
+     * @return array
+     */
+    public function update(UserRequest $request, $id, Result $result)
+    {
+//        $id = $request->get('id');
+        $user = User::find($id);
+        $user->fill($request->all());
+        $upd = $user->save();
+        if ($upd)
+            $result->succeed($user);
+        else
+            $result->failed('更新失败');
+
+        return $result->toArray();
+    }
+
+    /**
+     * 删除
+     *
+     * @param $id
+     * @param Result $result
+     * @return array
+     */
+    public function destroy($id, Result $result)
+    {
+
+        $user = User::find($id);
+        if (!$user) {
+            $result->failed('已删除或不存在');
+        } else {
+            //执行删除
+            $del = $user->delete();
+            if ($del) {
+                $result->succeed($user);
+            } else {
+                $result->failed('删除失败');
+            }
+        }
+
+        return $result->toArray();
+    }
+
+
+    /**
+     * 批量删除
+     * @param Request $request
+     * @param Result $result
+     * @return array
+     */
+    public function destroyBat(Request $request, Result $result)
+    {
+        $ids = $request->get('ids');
+        if ($ids && is_array($ids)) {
+            $dels = User::whereIn('id', $ids)->delete();
+            if ($dels > 0) {
+                $result->succeed();
+            } else {
+                $result->failed('删除失败');
+            }
+        } else {
+            $result->failed('参数错误');
+        }
+
+        return $result->toArray();
+    }
+}
