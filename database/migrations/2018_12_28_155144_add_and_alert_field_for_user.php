@@ -45,13 +45,16 @@ class AddAndAlertFieldForUser extends Migration
     {
         //
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('sex');
             $table->dropColumn('status');
+            $table->dropColumn('bool_admin');
+            $table->dropColumn('avatar');
             $table->dropColumn('login_at');
             $table->dropColumn('login_ip');
-            $table->dropColumn('avatar');
+            $table->dropColumn('sex');
             $table->dropColumn('created_sec');
             $table->dropColumn('updated_sec');
+            $table->dropColumn('username');
+            $table->timestamps();
         });
     }
 }
