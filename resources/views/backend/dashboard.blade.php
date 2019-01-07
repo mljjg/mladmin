@@ -98,7 +98,7 @@
                                     <td>{{ config('queue.default') }}</td>
                                 </tr>
                                 <tr>
-                                    <td>系统URL</td>
+                                    <td>文件系统</td>
                                     <td>{{ config('filesystems.default') }}</td>
                                 </tr>
                                 </tbody>
