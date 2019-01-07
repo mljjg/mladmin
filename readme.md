@@ -89,3 +89,11 @@ class User extends \Ml\Models\User
 ```
 
 #### 依赖 spatie/laravel-permission 实现用户权限控制
+```
+https://github.com/spatie/laravel-permission
+
+composer require spatie/laravel-permission
+
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="config"
+
+```

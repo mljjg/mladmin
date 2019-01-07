@@ -25,7 +25,7 @@ class AddAndAlertFieldForUser extends Migration
             $table->integer('login_at')->comment('上次登录时间')->nullable();
             $table->string('login_ip', 64)->comment('上次登录IP:127.255.255.255')->nullable();
             $table->string('avatar')->comment('头像链接或者存储路径')->nullable();
-            $table->tinyInteger('bool_admin')->comment('是否后台用户，1:是，0:否')->default(0);
+            $table->tinyInteger('bool_admin')->comment('是否超级管理员，1:是，0:否')->default(0);
             $table->tinyInteger('status')->comment('状态，2:已停用 1:启用，0:未激活')->default(0);
         });
     }

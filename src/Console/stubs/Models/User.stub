@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Notifications\Notifiable;
+
+class User extends \Ml\Models\User
+{
+    //
+    use Notifiable;
+
+    public function isSuperAdmin()
+    {
+
+        return $this->bool_admin == 1;
+    }
+}

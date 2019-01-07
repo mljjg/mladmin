@@ -31,9 +31,9 @@ return [
 
         'prefix' => 'admin',
 
-        'namespace' => 'App\\Admin\\Controllers',
+        'namespace' => 'App\\Http\\Controllers\\Admin',
 
-        'middleware' => ['web','auth'],//admin
+        'middleware' => ['web', 'auth'],//admin
     ],
 
     /*
@@ -47,6 +47,22 @@ return [
     |
     */
     'directory' => app_path('Admin'),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 路由存储目录
+    |--------------------------------------------------------------------------
+    */
+    'dir_route' => app_path('routes'),
+
+    /*
+   |--------------------------------------------------------------------------
+   | 控制器存储目录
+   |--------------------------------------------------------------------------
+   */
+    'dir_controller' => app_path('Http/Controllers/Admin'),
+
 
     /*
    |--------------------------------------------------------------------------
@@ -62,17 +78,19 @@ return [
         'connection' => '',
 
         // User tables and model.
-        'users_table' => 'admin_users',
+        'users_table' => 'users',
         'users_model' => \Ml\Models\User::class,
     ],
 
 
     //顶部导航栏
-    'menu_top'=>[
+    'menu_top' => [
         [
             "id" => "dashboard",
-            "text" => "控制台",
-            "permission" => function(){ return true; },
+            "text" => "仪表盘",
+            "permission" => function () {
+                return true;
+            },
             "icon" => "",
             "route" => "admin.dashboard",//优先级第二
             "params" => [],
@@ -83,8 +101,10 @@ return [
         [
             "id" => "system",
             "text" => "系统设置",
-//            "permission" => function(){ return true; },
-            "permission" => function(){ return Auth::user()->can('manage_system'); },
+            "permission" => function () {
+                return true;
+            },
+//            "permission" => function(){ return Auth::user()->can('manage_system'); },
             "icon" => "",
             "route" => "",
             "params" => [],
@@ -94,7 +114,10 @@ return [
                 [
                     "id" => "system.users",
                     "text" => "用户管理",
-                    "permission" => function(){ return true; },
+                    "permission" => function () {
+                        return true;
+                    },
+//                    "permission" => function(){ return Auth::user()->can('manage_users'); },
                     "icon" => "",
                     "route" => "admin.users",
                     "params" => [],
@@ -104,7 +127,9 @@ return [
                 [
                     "id" => "system.permissions",
                     "text" => "权限管理",
-                    "permission" => function(){ return true; },
+                    "permission" => function () {
+                        return Auth::user()->can('manage_permissions');
+                    },
                     "icon" => "",
                     "route" => "admin.permissions",
                     "params" => [],
@@ -114,7 +139,9 @@ return [
                 [
                     "id" => "system.roles",
                     "text" => "角色管理",
-                    "permission" => function(){ return true; },
+                    "permission" => function () {
+                        return Auth::user()->can('manage_roles');
+                    },
                     "icon" => "",
                     "route" => "admin.roles",
                     "params" => [],
@@ -127,11 +154,13 @@ return [
     ],
 
     //左侧导航栏
-    'menu_left'=>[
+    'menu_left' => [
         [
-            "id" => "dashboard",
-            "text" => "所有商品",
-            "permission" => function(){ return true; },
+            "id" => "products",
+            "text" => "淘客商品",
+            "permission" => function () {
+                return true;
+            },
             "icon" => "",
             "route" => "admin.dashboard",
             "params" => [],
@@ -139,101 +168,18 @@ return [
             "link" => "",
             "children" => [
                 [
-                    "id" => "dashboard",
-                    "text" => "列表一",
-                    "permission" => function(){ return true; },
+                    "id" => "product.dtk",
+                    "text" => "大淘客",
+                    "permission" => function () {
+                        return true;
+                    },
                     "icon" => "",
                     "route" => "admin.dashboard",
                     "params" => [],
                     "query" => [],
                     "link" => "",
-                ],
-                [
-                    "id" => "dashboard",
-                    "text" => "列表二",
-                    "permission" => function(){ return true; },
-                    "icon" => "",
-                    "route" => "admin.dashboard",
-                    "params" => [],
-                    "query" => [],
-                    "link" => "",
-                ],
-                [
-                    "id" => "dashboard",
-                    "text" => "列表三",
-                    "permission" => function(){ return true; },
-                    "icon" => "",
-                    "route" => "admin.dashboard",
-                    "params" => [],
-                    "query" => [],
-                    "link" => "",
-                ],
+                ]
             ],
-        ],
-        [
-            "id" => "dashboard",
-            "text" => "解决方案",
-            "permission" => function(){ return true; },
-            "icon" => "",
-            "route" => "admin.dashboard",
-            "params" => [],
-            "query" => [],
-            "link" => "",
-            "children" => [
-                [
-                    "id" => "dashboard",
-                    "text" => "解决一",
-                    "permission" => function(){ return true; },
-                    "icon" => "",
-                    "route" => "admin.dashboard",
-                    "params" => [],
-                    "query" => [],
-                    "link" => "",
-                ],
-                [
-                    "id" => "dashboard",
-                    "text" => "解决二",
-                    "permission" => function(){ return true; },
-                    "icon" => "",
-                    "route" => "admin.dashboard",
-                    "params" => [],
-                    "query" => [],
-                    "link" => "",
-                ],
-                [
-                    "id" => "dashboard",
-                    "text" => "解决三",
-                    "permission" => function(){ return true; },
-                    "icon" => "",
-                    "route" => "admin.dashboard",
-                    "params" => [],
-                    "query" => [],
-                    "link" => "",
-                ],
-            ],
-        ],
-
-        [
-            "id" => "dashboard",
-            "text" => "云市场",
-            "permission" => function(){ return true; },
-            "icon" => "",
-            "route" => "admin.dashboard",//优先级第二
-            "params" => [],
-            "query" => [],//优先级第三
-            "link" => "",//优先级第一
-            "children" => [],
-        ],
-        [
-            "id" => "dashboard",
-            "text" => "发布商品",
-            "permission" => function(){ return true; },
-            "icon" => "",
-            "route" => "admin.dashboard",
-            "params" => [],
-            "query" => [],
-            "link" => "",
-            "children" => [],
         ],
     ],
 ];

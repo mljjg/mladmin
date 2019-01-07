@@ -48,6 +48,7 @@
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
+                    @include('backend.layouts._error')
                     <form class="layui-form"  action="{{url('admin/login')}}" method="POST">
                         {{--防跨越--}}
                         {{ csrf_field() }}

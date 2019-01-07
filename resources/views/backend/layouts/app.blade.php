@@ -24,6 +24,7 @@
             <div class="content-header" style="margin-bottom: 5px">
                 @includeWhen($breadcrumb ?? true, 'backend.layouts._breadcrumb')
             </div>
+            @include('backend.layouts._error')
             @yield('content')
         </div>
     </div>

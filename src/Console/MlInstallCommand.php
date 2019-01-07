@@ -9,7 +9,7 @@ class MlInstallCommand extends Command
 {
     /**
      * The name and signature of the console command.
-     *
+     * php artisan mlAdmin:install
      * @var string
      */
     protected $signature = 'mlAdmin:install';
@@ -89,129 +89,84 @@ class MlInstallCommand extends Command
     protected function initAdminDirectory()
     {
 
-        $this->directory = config('admin.directory');
-
-//        if (is_dir($this->directory)) {
-//            $this->line("<error>{$this->directory} directory already exists !</error> ");
-//
-//            return;
-//        }
-
-        $this->makeDir('/');
-
-        $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '', $this->directory));
-
-        $this->makeDir('Controllers');
+        ## 创建模型
+        $this->createModelFiles();
 
         ## 创建 控制器
-        $this->createBaseController();
-        $this->createWelcomeController();
-        $this->createLoginController();
-        $this->createUsersController();
+        $this->createControllerFiles();
 
-//        $this->createAuthController();
-//        $this->createExampleController();
-//
-//        $this->createBootstrapFile();
+        ## 创建用户的 策略类
+        $this->createPolicyFiles();
 
         ## 路由文件目录
         $this->createRoutesFile();
     }
 
-
-    /**
-     * Create BaseController
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public function createBaseController()
+    public function createModelFiles()
     {
-        $controllerFile = $this->directory . '/Controllers/BaseController.php';
-        if (is_file($controllerFile)) {
-            $this->error('<info>Exist BaseController file was created:</info> ' . str_replace(base_path(), '', $controllerFile));
-            return false;
+        ## 创建 Models 目录
+        $dir = app_path('Models');
+        if (!is_dir($dir))
+            $this->filesystem->makeDirectory($dir, 0755, true, true);
+
+        ## 创建基础策略类
+        $fileModels = [
+            'BaseModel' => '基础模型类',
+            'User' => '用户模型类',
+        ];
+
+        foreach ($fileModels as $fileName => $fileTitle) {
+            $file = $dir . "/{$fileName}.php";
+            if (is_file($file)) {
+                $this->error('<info>' . $fileName . ' file was Existed:</info> ' . str_replace(base_path(), '', $file));
+                continue;
+            }
+
+            $contents = $this->getStub("Models/{$fileName}");
+            $this->filesystem->put($file, $contents);
+
+            $this->line('<info>' . $fileName . '(' . $fileTitle . ') file was created:</info> ' . str_replace(base_path(), '', $file));
         }
-
-        $contents = $this->getStub('BaseController');
-
-        $this->filesystem->put(
-            $controllerFile,
-            str_replace('DummyNamespace', config('admin.route.namespace'), $contents)
-        );
-        $this->line('<info>BaseController file was created:</info> ' . str_replace(base_path(), '', $controllerFile));
 
     }
 
     /**
-     * Create WelcomeController
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function createWelcomeController()
+    public function createControllerFiles()
     {
 
-        $controllerFile = $this->directory . '/Controllers/WelcomeController.php';
-        if (is_file($controllerFile)) {
-            $this->error('<info>Exist WelcomeController file was created:</info> ' . str_replace(base_path(), '', $controllerFile));
-            return false;
+        ## 创建控制器目录
+        $dir = config('admin.dir_controller');//app_path('Http/Controllers/Admin');
+        if (!is_dir($dir))
+            $this->filesystem->makeDirectory($dir, 0755, true, true);
+
+        ## 创建基础策略类
+        $fileModels = [
+            'BaseController' => '基础控制器类',
+            'WelcomeController' => '欢迎控制器类',
+            'LoginController' => '登录控制器类',
+            'UsersController' => '用户控制器类',
+            'PermissionsController' => '权限控制器类',
+            'RolesController' => '角色控制器类',
+        ];
+
+        foreach ($fileModels as $fileName => $fileTitle) {
+            $file = $dir . "/{$fileName}.php";
+            if (is_file($file)) {
+                $this->error('<info>' . $fileName . ' file was Existed:</info> ' . str_replace(base_path(), '', $file));
+                continue;
+            }
+
+            $contents = $this->getStub("Controllers/{$fileName}");
+            $this->filesystem->put(
+                $file,
+                str_replace('DummyNamespace', config('admin.route.namespace'), $contents)
+            );
+
+            $this->line('<info>' . $fileName . '(' . $fileTitle . ') file was created:</info> ' . str_replace(base_path(), '', $file));
         }
-        $contents = $this->getStub('WelcomeController');
-
-        $this->filesystem->put(
-            $controllerFile,
-            str_replace('DummyNamespace', config('admin.route.namespace'), $contents)
-        );
-        $this->line('<info>WelcomeController file was created:</info> ' . str_replace(base_path(), '', $controllerFile));
-
     }
-
-    /**
-     * Create LoginController
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public function createLoginController()
-    {
-
-        $controllerFile = $this->directory . '/Controllers/LoginController.php';
-        if (is_file($controllerFile)) {
-            $this->error('<info>Exist LoginController file was created:</info> ' . str_replace(base_path(), '', $controllerFile));
-            return false;
-        }
-        $contents = $this->getStub('LoginController');
-
-        $this->filesystem->put(
-            $controllerFile,
-            str_replace('DummyNamespace', config('admin.route.namespace'), $contents)
-        );
-        $this->line('<info>LoginController file was created:</info> ' . str_replace(base_path(), '', $controllerFile));
-
-    }
-
-    /**
-     * Create UsersController
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public function createUsersController()
-    {
-
-        $controllerFile = $this->directory . '/Controllers/UsersController.php';
-        if (is_file($controllerFile)) {
-            $this->error('<info>Exist UsersController file was created:</info> ' . str_replace(base_path(), '', $controllerFile));
-            return false;
-        }
-
-        $contents = $this->getStub('UsersController');
-
-        $this->filesystem->put(
-            $controllerFile,
-            str_replace('DummyNamespace', config('admin.route.namespace'), $contents)
-        );
-        $this->line('<info>UsersController file was created:</info> ' . str_replace(base_path(), '', $controllerFile));
-
-    }
-
 
     /**
      * Create routes file.
@@ -219,18 +174,54 @@ class MlInstallCommand extends Command
      * @return bool
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    protected function createRoutesFile()
+    public function createRoutesFile()
     {
-        $file = $this->directory . '/routes.php';
+        $dir = config('admin.dir_route');
+        if (!is_dir($dir))
+            $this->filesystem->makeDirectory($dir, 0755, true, true);
+
+        $file = $dir . '/admin.php';
         if (is_file($file)) {
-            $this->error('<info>Exist Routes file was created:</info> ' . str_replace(base_path(), '', $file));
+            $this->error('<info>Routes file was Existed:</info> ' . str_replace(base_path(), '', $file));
             return false;
         }
 
         $contents = $this->getStub('routes');
-//        $this->laravel['files']->put($file, str_replace('DummyNamespace', config('admin.route.namespace'), $contents));
-        $this->filesystem->put($file, str_replace('DummyNamespace', config('admin.route.namespace'), $contents));
+        $this->filesystem->put($file, $contents);
         $this->line('<info>Routes file was created:</info> ' . str_replace(base_path(), '', $file));
+    }
+
+    /**
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function createPolicyFiles()
+    {
+        ## 创建策略类目录
+        $dir = app_path('Policies');//app/Policies
+        if (!is_dir($dir))
+            $this->filesystem->makeDirectory($dir, 0755, true, true);
+
+        ## 创建基础策略类
+        $policies = [
+            'Policy' => '基础策略类',
+            'PermissionPolicy' => '权限策略类',
+            'RolePolicy' => '角色策略类',
+            'UserPolicy' => '用户策略类',
+        ];
+
+        foreach ($policies as $fileName => $fileTitle) {
+            $file = $dir . "/{$fileName}.php";
+            if (is_file($file)) {
+                $this->error('<info>' . $fileName . ' file was Existed:</info> ' . str_replace(base_path(), '', $file));
+                continue;
+            }
+            $contents = $this->getStub("Policies/{$fileName}");
+            $this->filesystem->put($file, $contents);
+
+            $this->line('<info>' . $fileName . '(' . $fileTitle . ') file was created:</info> ' . str_replace(base_path(), '', $file));
+
+        }
+
     }
 
 

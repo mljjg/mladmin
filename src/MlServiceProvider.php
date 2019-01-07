@@ -28,7 +28,7 @@ class MlServiceProvider extends ServiceProvider
     public function boot()
     {
         ## 加载路由
-        if (file_exists($routes = $this->admin_path('routes.php'))) {
+        if (file_exists($routes = $this->admin_route_path('admin.php'))) {
             $this->loadRoutesFrom($routes);
         }
 
@@ -66,5 +66,16 @@ class MlServiceProvider extends ServiceProvider
     function admin_path($path = '')
     {
         return ucfirst(config('admin.directory')) . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+
+    /**
+     * 路由存储的文件路径
+     * @param $path
+     * @return string
+     */
+    function admin_route_path($path)
+    {
+        return config('admin.dir_route') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+
     }
 }

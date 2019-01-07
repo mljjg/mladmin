@@ -74,14 +74,15 @@
                         let msg = result.message;
 
                         if (!result.success) {
-                            layer.open({
-                                type: 1,
-                                anim: 0,
-                                title: msg,
-                                area: ['50%', '70%'],
-                                btn: ['关闭'],
-                                content: JSON.stringify(result)
-                            });
+                            layer.msg(msg);
+                            // layer.open({
+                            //     type: 1,
+                            //     anim: 0,
+                            //     title: msg,
+                            //     area: ['50%', '70%'],
+                            //     btn: ['关闭'],
+                            //     content: JSON.stringify(result)
+                            // });
 
                         } else {
                             // layer.msg(msg);
