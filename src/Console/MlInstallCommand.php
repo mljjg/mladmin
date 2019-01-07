@@ -100,8 +100,16 @@ class MlInstallCommand extends Command
 
         ## 路由文件目录
         $this->createRoutesFile();
+
+        ## 重写异常类
+        $this->rewriteExceptionHandler();
+
     }
 
+    /**
+     * 创建 models
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     public function createModelFiles()
     {
         ## 创建 Models 目录
@@ -131,6 +139,7 @@ class MlInstallCommand extends Command
     }
 
     /**
+     * 创建 控制器
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function createControllerFiles()
@@ -192,6 +201,7 @@ class MlInstallCommand extends Command
     }
 
     /**
+     * 创建 策略类
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function createPolicyFiles()
@@ -224,6 +234,38 @@ class MlInstallCommand extends Command
 
     }
 
+    /**
+     * 重写 异常处理类
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function rewriteExceptionHandler()
+    {
+        ## 创建策略类目录
+        $dir = app_path('Exceptions');
+        if (!is_dir($dir))
+            $this->filesystem->makeDirectory($dir, 0755, true, true);
+
+        $file = $dir . '/Handler.php';
+        $answer = 'y';
+        if (is_file($file)) {
+            $answer = $this->ask('<info>Handler file was Existed:</info> ' . str_replace(base_path(), '', $file) . ', <info>Rewrite it</info>[y/n]?');
+        }
+
+        if (strtoupper($answer[0]) === 'Y') {
+            $contents = $this->getStub("Handler");
+            $this->filesystem->put($file, $contents);
+            if (is_file($file))
+                $this->line('<info>Exceptions/Handler file was rewrite:</info> ' . str_replace(base_path(), '', $file));
+            else
+                $this->line('<info>Exceptions/Handler file was created:</info> ' . str_replace(base_path(), '', $file));
+
+        } else {
+            $this->line('<info>Exceptions/Handler file was give up:</info> ' . str_replace(base_path(), '', $file));
+
+        }
+
+    }
+
 
     /**
      * Get stub contents.
@@ -235,7 +277,12 @@ class MlInstallCommand extends Command
      */
     protected function getStub($name)
     {
-        return $this->filesystem->get(__DIR__ . "/stubs/{$name}.stub");
+        $realPath = __DIR__ . "/stubs/{$name}.stub";
+        if (!is_file($realPath)) {
+            $this->info('File is not exist');
+        }
+
+        return $this->filesystem->get($realPath);
 //        return $this->laravel['files']->get(__DIR__."/stubs/$name.stub");
     }
 
