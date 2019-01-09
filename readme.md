@@ -43,7 +43,7 @@ config/auth.php
 ```
 
 
-重写异常类的 unauthenticated 方法：app/Exceptions/Handler.php
+重写异常类的 unauthenticated 方法：app/Exceptions/Handler.php （mladmin:install 若未选择替换，则需要手动配置）
 ```php
 use Illuminate\Auth\AuthenticationException;
 
@@ -89,7 +89,7 @@ use Illuminate\Auth\AuthenticationException;
 ```
 
 
-#### 依赖 spatie/laravel-permission 实现用户权限控制
+#### 依赖 spatie/laravel-permission 实现用户权限控制 (已自动引入，不需要操作)
 ```
 https://github.com/spatie/laravel-permission
 
@@ -99,7 +99,7 @@ php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvid
 
 ```
 
-## 文件上传
+## 文件上传 （需要配置）
 config/filesystems.php
 
 追加配置：
@@ -141,29 +141,6 @@ config/filesystems.php
         ],
 
     ],
-```
-
-#### 防跨越拦截过滤
-文件：app/Http/Middleware/VerifyCsrfToken.php
-```
-<?php
-
-namespace App\Http\Middleware;
-
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
-
-class VerifyCsrfToken extends Middleware
-{
-    /**
-     * The URIs that should be excluded from CSRF verification.
-     *
-     * @var array
-     */
-    protected $except = [
-        //
-        'uploader/*',
-    ];
-}
 ```
 
 ## 获取当前-Laravel Active 

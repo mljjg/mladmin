@@ -71,12 +71,12 @@ class MlInstallCommand extends Command
     {
         $this->call('migrate');//执行php artisan migrate
 
-        $userModel = config('admin.database.users_model');
-
-        if ($userModel::count() == 0) {
-            //无用户填充用户
-            $this->call('db:seed', ['--class' => \Ml\Auth\DataBase\Seed\AdminTableSeeder::class]);
-        }
+//        $userModel = config('admin.database.users_model');
+//
+//        if ($userModel::count() == 0) {
+//            //无用户填充用户
+//            $this->call('db:seed', ['--class' => \Ml\Auth\DataBase\Seed\AdminTableSeeder::class]);
+//        }
     }
 
 
