@@ -24,10 +24,44 @@ At last run following command to finish install.
 php artisan mlAdmin:install
 ```
 
+##### 修改 auth 的 users model
+
+config/auth.php
+```
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
+
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
+    ],
+    
+```
+
+
 重写异常类的 unauthenticated 方法：app/Exceptions/Handler.php
 ```php
 use Illuminate\Auth\AuthenticationException;
 
+/**
+     * Render an exception into an HTTP response.
+     * @param \Illuminate\Http\Request $request
+     * @param Exception $exception
+     * @return \Illuminate\Http\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function render($request, Exception $exception)
+    {
+        if ($exception instanceof AuthorizationException) {
+            return redirect()->guest(route('admin.permission-denied'));
+        }
+
+        return parent::render($request, $exception);
+    }
+    
  /**
      * Convert an authentication exception into a response.
      *
@@ -54,39 +88,6 @@ use Illuminate\Auth\AuthenticationException;
 
 ```
 
-User修改：
-
-```php
-
-namespace App;
-
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User extends \Ml\Models\User
-{
-//    use Notifiable;
-//
-//    /**
-//     * The attributes that are mass assignable.
-//     *
-//     * @var array
-//     */
-//    protected $fillable = [
-//        'name', 'email', 'password',
-//    ];
-//
-//    /**
-//     * The attributes that should be hidden for arrays.
-//     *
-//     * @var array
-//     */
-//    protected $hidden = [
-//        'password', 'remember_token',
-//    ];
-}
-
-```
 
 #### 依赖 spatie/laravel-permission 实现用户权限控制
 ```
@@ -140,4 +141,27 @@ config/filesystems.php
         ],
 
     ],
+```
+
+#### 防跨越拦截过滤
+文件：app/Http/Middleware/VerifyCsrfToken.php
+```
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+
+class VerifyCsrfToken extends Middleware
+{
+    /**
+     * The URIs that should be excluded from CSRF verification.
+     *
+     * @var array
+     */
+    protected $except = [
+        //
+        'uploader/*',
+    ];
+}
 ```

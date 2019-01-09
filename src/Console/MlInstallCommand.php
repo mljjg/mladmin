@@ -104,6 +104,39 @@ class MlInstallCommand extends Command
         ## 重写异常类
         $this->rewriteExceptionHandler();
 
+        ## 辅助类
+        $this->createHandlerFiles();
+
+    }
+
+    /**
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function createHandlerFiles()
+    {
+        ## 创建 Handlers 目录
+        $dir = app_path('Handlers');
+        if (!is_dir($dir))
+            $this->filesystem->makeDirectory($dir, 0755, true, true);
+
+        ## 创建基础策略类
+        $fileModels = [
+            'UploadHandler' => '上传操作类'
+        ];
+
+        foreach ($fileModels as $fileName => $fileTitle) {
+            $file = $dir . "/{$fileName}.php";
+            if (is_file($file)) {
+                $this->error('<info>' . $fileName . ' file was Existed:</info> ' . str_replace(base_path(), '', $file));
+                continue;
+            }
+
+            $contents = $this->getStub("Handlers/{$fileName}");
+            $this->filesystem->put($file, $contents);
+
+            $this->line('<info>' . $fileName . '(' . $fileTitle . ') file was created:</info> ' . str_replace(base_path(), '', $file));
+        }
+
     }
 
     /**
@@ -158,6 +191,7 @@ class MlInstallCommand extends Command
             'UsersController' => '用户控制器类',
             'PermissionsController' => '权限控制器类',
             'RolesController' => '角色控制器类',
+            'UploadController' => '文件上传控制器类',
         ];
 
         foreach ($fileModels as $fileName => $fileTitle) {
