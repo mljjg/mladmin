@@ -165,3 +165,7 @@ class VerifyCsrfToken extends Middleware
     ];
 }
 ```
+
+## 获取当前-Laravel Active 
+### Get the current controller class
+https://www.hieule.info/products/laravel-active-version-3-released

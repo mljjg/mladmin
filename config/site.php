@@ -7,9 +7,9 @@
  */
 return [
     //版权
-    'copyright' => env('SITE_COPY_RIGHT', '2018-2023 XXX XXX XXX'),
+    'copyright' => env('SITE_COPY_RIGHT', 'lqjs.top'),
     //备案号
-    'icp' => env('SITE_ICP', '浙ICP备XXXXXXXXX号-1'),
+    'icp' => env('SITE_ICP', '浙ICP备18052134号-1'),
     //备案链接地址
     'icp_link' => env('SITE_ICP_LINK', 'http://www.miitbeian.gov.cn'),
 ];

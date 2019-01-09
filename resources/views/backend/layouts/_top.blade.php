@@ -1,6 +1,3 @@
-<script>
-
-</script>
 <div class="layui-header">
     <div class="layui-logo">
         {{ config('app.name', 'Laravel') }}
