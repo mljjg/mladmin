@@ -35,10 +35,14 @@ class MlServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             ## 静态资源
             $this->publishes([__DIR__ . '/../resources/assets' => public_path('vendor/ml-admin')], 'ml-admin-assets');
+
             ## views
             $this->publishes([__DIR__ . '/../resources/views' => resource_path('views')], 'ml-admin-views');
+
             ## 配置文件
             $this->publishes([__DIR__ . '/../config/admin.php' => config_path('admin.php')], 'ml-admin-config');
+            $this->publishes([__DIR__ . '/../config/site.php' => config_path('site.php')], 'ml-admin-config');
+
             ## database migration
             $this->publishes([__DIR__ . '/../database/migrations' => database_path('migrations')], 'ml-admin-migrations');
         }

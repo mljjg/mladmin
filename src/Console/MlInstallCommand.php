@@ -154,6 +154,7 @@ class MlInstallCommand extends Command
         $fileModels = [
             'BaseModel' => '基础模型类',
             'User' => '用户模型类',
+            'File' => '文件模型类',
         ];
 
         foreach ($fileModels as $fileName => $fileTitle) {
@@ -188,6 +189,7 @@ class MlInstallCommand extends Command
             'BaseController' => '基础控制器类',
             'WelcomeController' => '欢迎控制器类',
             'LoginController' => '登录控制器类',
+            'UserController' => '个人控制器类',
             'UsersController' => '用户控制器类',
             'PermissionsController' => '权限控制器类',
             'RolesController' => '角色控制器类',

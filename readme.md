@@ -99,6 +99,44 @@ php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvid
 
 ```
 
+####  策略类注册（需要手动添加）
+```
+<?php
+
+namespace App\Providers;
+
+
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        'App\Models\BaseModel' => 'App\Policies\Policy',
+        'App\Models\User' => 'App\Policies\UserPolicy',//注册策略类
+
+        \Spatie\Permission\Models\Role::class => \App\Policies\RolePolicy::class,
+        \Spatie\Permission\Models\Permission::class => \App\Policies\PermissionPolicy::class,
+    ];
+
+    /**
+     * Register any authentication / authorization services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        //
+    }
+}
+```
+
 ## 文件上传 （需要配置）
 config/filesystems.php
 
@@ -143,6 +181,22 @@ config/filesystems.php
     ],
 ```
 
-## 获取当前-Laravel Active 
+## 获取当前-Laravel Active (已自动引入，无需安装)
 ### Get the current controller class
 https://www.hieule.info/products/laravel-active-version-3-released
+
+
+## 执行命令创建用户
+```
+php artisan mlAdmin:create-user
+```
+
+## 开启服务
+```
+php artisan serve
+```
+Laravel development server started: <http://127.0.0.1:8000>
+
+进入后台：
+http://127.0.0.1:8000/admin
+

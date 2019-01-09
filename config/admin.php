@@ -154,84 +154,36 @@ return [
 
             ],
         ],
+    ],
+
+    //左侧导航栏
+    'menu_left' => [
+
         [
             "id" => "logs",
-            "text" => "日志",
+            "text" => "其他功能",
             "permission" => function () {
-                return Auth::user()->can('manage_menu_logs');
+                return Auth::user()->can('manage_menu_other');
             },
             "icon" => "",
             "route" => "admin.logs",//优先级第二
             "params" => [],
             "query" => [],//优先级第三
             "link" => "",//优先级第一
-            "children" => [],
-        ],
-    ],
-
-    //左侧导航栏
-    'menu_left' => [
-        [
-            "id" => "products",
-            "text" => "淘客商品",
-            "permission" => function () {
-                return Auth::user()->can('manage_menu_tk');
-            },
-            "icon" => "",
-            "route" => "",
-            "params" => [],
-            "query" => [],
-            "link" => "",
             "children" => [
                 [
-                    "id" => "home.banner",
-                    "text" => "轮播图",
+                    "id" => "logs",
+                    "text" => "系统日志",
                     "permission" => function () {
-                        return Auth::user()->can('manage_menu_tk_carousel');
+                        return Auth::user()->can('manage_menu_logs');
                     },
                     "icon" => "",
-                    "route" => "admin.banners",
+                    "route" => "admin.logs",//优先级第二
                     "params" => [],
-                    "query" => [],
-                    "link" => "",
-                ],
-                [
-                    "id" => "home.activities",
-                    "text" => "活动图",
-                    "permission" => function () {
-                        return Auth::user()->can('manage_menu_tk_activity');
-                    },
-                    "icon" => "",
-                    "route" => "admin.activities",
-                    "params" => [],
-                    "query" => [],
-                    "link" => "",
-                ],
-                [
-                    "id" => "home.navs",
-                    "text" => "商品分类",
-                    "permission" => function () {
-                        return Auth::user()->can('manage_menu_tk_category');
-                    },
-                    "icon" => "",
-                    "route" => "admin.navs",
-                    "params" => [],
-                    "query" => [],
-                    "link" => "",
-                ],
-                [
-                    "id" => "product.dtk",
-                    "text" => "淘客商品",
-                    "permission" => function () {
-                        return Auth::user()->can('manage_menu_tk_product');
-                    },
-                    "icon" => "",
-                    "route" => "admin.dtk",
-                    "params" => [],
-                    "query" => [],
-                    "link" => "",
-                ],
-
+                    "query" => [],//优先级第三
+                    "link" => "",//优先级第一
+                    "children" => [],
+                ]
             ],
         ],
     ],
