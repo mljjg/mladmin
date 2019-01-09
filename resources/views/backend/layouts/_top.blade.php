@@ -57,9 +57,9 @@
                     {{ Auth::user()->name }}
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">基本资料</a></dd>
-                    <dd><a href="">安全设置</a></dd>
-                    <dd><a href="{{route('admin.permission-denied')}}">无权限页面</a></dd>
+                    <dd><a href="{{ route('user.edit',Auth::user()->id) }}">基本资料</a></dd>
+                    <dd><a href="{{ route('user.password.edit',Auth::user()->id) }}">修改密码</a></dd>
+                    {{--                    <dd><a href="{{route('admin.permission-denied')}}">无权限页面</a></dd>--}}
                     <dd>
                         <a href=""
                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">退出</a>

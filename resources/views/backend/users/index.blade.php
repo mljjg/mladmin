@@ -17,7 +17,7 @@
     <div style="padding: 10px;">
         <table id="tbl" lay-filter="tblFilter"></table>
         <script type="text/html" id="bartbl">
-            {{--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>--}}
+            <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="password">重置密码</a>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
         </script>
@@ -99,7 +99,7 @@
                 elem: '#tbl'
                 // , height: 312
                 , url: "{{route('admin.users.list')}}"  //数据接口
-                , title: '用户表'
+                , title: '用户列表'
                 , page: true //开启分页
                 , toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
                 // , totalRow: true //开启合计行
@@ -152,7 +152,7 @@
                     , {field: 'login_ip', title: '上次登录IP', width: 160}
                     , {field: 'created_at', title: '创建时间', width: 180, sort: true}
                     , {field: 'updated_at', title: '修改时间', width: 180, sort: true}
-                    , {fixed: 'right', width: 165, align: 'center', toolbar: '#bartbl'}
+                    , {fixed: 'right', width: 200, align: 'center', toolbar: '#bartbl'}
                 ]]
                 , parseData: function (res) {
                     return {
@@ -214,8 +214,10 @@
             table.on('tool(tblFilter)', function (obj) { //注：tool 是工具条事件名，tblFilter 是 table 原始容器的属性 lay-filter="对应的值"
                 let data = obj.data //获得当前行数据
                     , layEvent = obj.event; //获得 lay-event 对应的值
-                if (layEvent === 'detail') {
-                    layer.msg('查看操作');
+                if (layEvent === 'password') {
+
+                    window.location.href = "{{ url('admin/users/password') }}/" + data.id;
+
                 } else if (layEvent === 'del') {
 
                     layer.confirm('真的删除行么', function (index) {

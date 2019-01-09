@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -27,13 +25,12 @@ class SeedRolesAndPermissions extends Migration
         Permission::create(['name' => 'manage_roles', 'remarks' => '角色管理']);
 
 
-        // 创建超级管理角色，并赋予权限
-        $super_admin = Role::create(['name' => 'SuperAdmin', 'remarks' => '超级管理员']);
-        $super_admin->givePermissionTo('manage_system', 'manage_users', 'manage_permissions', 'manage_roles');
-
-        // 创建管理员角色，并赋予权限
+        // 创建管理角色，并赋予权限
         $admin = Role::create(['name' => 'Admin', 'remarks' => '管理员']);
-        $admin->givePermissionTo('manage_system', 'manage_users', 'manage_roles');
+        $admin->givePermissionTo('manage_system', 'manage_users', 'manage_permissions', 'manage_roles');
+
+        $founder = Role::create(['name' => 'Founder', 'remarks' => '站长']);
+        $founder->givePermissionTo('manage_system', 'manage_users');
 
     }
 

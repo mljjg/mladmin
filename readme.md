@@ -97,3 +97,47 @@ composer require spatie/laravel-permission
 php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="config"
 
 ```
+
+## 文件上传
+config/filesystems.php
+
+追加配置：
+
+```
+    // 配置的允许大小不能超过 PHP.ini 限制. 默认PHP POST 请求允许最大8MB，File Upload 最大 2MB
+    'uploader' => [
+
+        'folder' => ['avatar'],
+
+        // 图片
+        'image' => [
+            'size_limit' => 5242880, // 单位：字节，默认：5MB
+            'allowed_ext' => ["png", "jpg", "gif", 'jpeg'],
+        ],
+
+        // 附件
+        'annex' => [
+            'size_limit' => 204857600000, // 单位：字节，默认：5MB (5242880 B)  // 104857600
+            'allowed_ext' => ['zip','rar','7z','gz'],
+        ],
+
+        // 文件
+        'file' => [
+            'size_limit' => 5242880, // 单位：字节，默认：5MB
+            'allowed_ext' => ['pdf','doc','docx','xls','xlsx','ppt','pptx'],
+        ],
+
+        // 音频
+        'voice' => [
+            'size_limit' => 5242880, // 单位：字节，默认：5MB
+            'allowed_ext' => ['mp3','wmv'],
+        ],
+
+        // 视频
+        'video' => [
+            'size_limit' => 5242880, // 单位：字节，默认：5MB
+            'allowed_ext' => ['mp4'],
+        ],
+
+    ],
+```

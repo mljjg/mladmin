@@ -24,11 +24,9 @@ class UserRequest extends BaseRequest
                 'password' => 'required|string|between:6,16',
             ];
         } elseif ($this->routeIs('admin.users.update')) {
-//            \Log::info('_id_' . request('id'));
-//            \Log::info('_all_' . print_r(request()->all(),true));
             return [
-                'name' => 'required|between:1,25|unique:users,name,' . request('id'),//|regex:/^[A-Za-z0-9\-\_]+$/
-                'email' => 'required|email|unique:users,email,' . request('id'),
+                'name' => 'required|between:1,25|unique:users,name,' . request('user')->id,//|regex:/^[A-Za-z0-9\-\_]+$/
+                'email' => 'required|email|unique:users,email,' . request('user')->id,
             ];
         }
 

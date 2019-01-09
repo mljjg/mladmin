@@ -3,7 +3,6 @@
 namespace Ml\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -18,8 +17,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'status', 'sex', 'login_at', 'login_ip', 'username', 'bool_admin'
+        'name', 'email', 'password', 'status', 'sex', 'login_at', 'login_ip', 'username', 'bool_admin', 'avatar'
     ];
+
 
     /**
      * The attributes that should be hidden for arrays.
@@ -46,6 +46,22 @@ class User extends Authenticatable
 //    }
 
     /**
+     * 自动设置密码加密
+     * @param $value
+     */
+    public function setPasswordAttribute($value)
+    {
+        // 如果值的长度等于 60，即认为是已经做过加密的情况
+        if (strlen($value) != 60) {
+
+            // 不等于 60，做密码加密处理
+            $value = bcrypt($value);
+        }
+
+        $this->attributes['password'] = $value;
+    }
+
+    /**
      * 返回完整的头像地址
      *
      * @return mixed|string
@@ -55,10 +71,20 @@ class User extends Authenticatable
 
         if (!Str::startsWith($this->avatar, 'http')) {
             // 拼接完整的 URL
-            $this->avatar = !empty($path) ? Storage::url($path) : 'http://t.cn/RCzsdCq';
+            $this->avatar = !empty($this->avatar) ? \Illuminate\Support\Facades\Storage::url($this->avatar) : 'http://t.cn/RCzsdCq';
 
         }
 
         return $this->avatar;
+    }
+
+    /**
+     * 判定为 超级管理员
+     * @return bool
+     */
+    public function isSuperAdmin()
+    {
+
+        return $this->bool_admin == 1;
     }
 }

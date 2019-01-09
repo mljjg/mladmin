@@ -105,14 +105,13 @@ class UsersController extends BaseController
     /**
      * 编辑
      *
-     * @param $id
+     * @param User $user
      * @return mixed
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = User::find($id);
-//        $this->authorize('view', $user);//视图权限
+        $this->authorize('view', $user);//视图权限
 
         $roles = Role::get()->pluck('name', 'remarks')->toArray();
         $userRoles = $user->roles()->pluck('name', 'name')->toArray();
@@ -125,14 +124,13 @@ class UsersController extends BaseController
      * 更新
      *
      * @param UserRequest $request
-     * @param $id
+     * @param User $user
      * @param Result $result
      * @return array
      */
-    public function update(UserRequest $request, $id, Result $result)
+    public function update(UserRequest $request, User $user, Result $result)
     {
 
-        $user = User::find($id);
         if ($request->user()->cant('update', $user)) {
             return $result->failed('没有权限')->toArray();
         }
@@ -150,15 +148,15 @@ class UsersController extends BaseController
     /**
      * 删除
      *
-     * @param $id
+     * @param User $user
      * @param Result $result
      * @param Request $request
      * @return array
+     * @throws \Exception
      */
-    public function destroy($id, Result $result, Request $request)
+    public function destroy(User $user, Result $result, Request $request)
     {
 
-        $user = User::find($id);
         if ($request->user()->cant('delete', $user)) {
             return $result->failed('没有权限')->toArray();
         }
@@ -205,4 +203,48 @@ class UsersController extends BaseController
 
         return $result->toArray();
     }
+
+
+    /**
+     * 页面：修改密码
+     * @param User $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function showPasswordFormPage(User $user)
+    {
+        return $this->backend_view('users.password', compact('user'));
+    }
+
+    /**
+     * @param Request $request
+     * @param User $user
+     * @param Result $result
+     * @return array
+     */
+    public function passwordRequest(Request $request, User $user, Result $result)
+    {
+
+        $validator = \Validator::make($request->all(), [
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'password.min' => '新密码至少为6位',
+            'password.confirmed' => '确认密码与新密码不一致.',
+        ]);
+
+        if (!$validator->passes()) {
+            $result->failed($validator->errors()->first());
+            return $result->toArray();
+        }
+
+        $upd = $user->update(['password' => $request->password]);
+        if ($upd) {
+            $result->setMessage('密码更新成功');
+        } else {
+            $result->setMessage('密码更新失败');
+        }
+
+        return $result->toArray();
+
+    }
+
 }

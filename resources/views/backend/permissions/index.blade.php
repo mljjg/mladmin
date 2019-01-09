@@ -98,15 +98,15 @@
                 elem: '#tbl'
                 // , height: 312
                 , url: "{{route('admin.permissions.list')}}"  //数据接口
-                , title: '用户表'
+                , title: '权限列表'
                 , page: true //开启分页
                 , toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
                 // , totalRow: true //开启合计行
                 , cols: [[ //表头
                     {type: 'checkbox', fixed: 'left'}
                     , {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
-                    , {field: 'name', title: '权限名称', width: 200}
-                    , {field: 'remarks', title: '权限备注', width: 200}
+                    , {field: 'name', title: '权限名称', width: 300}
+                    , {field: 'remarks', title: '权限备注', width: 150}
                     , {field: 'created_at', title: '创建时间', width: 180, sort: true}
                     , {field: 'updated_at', title: '修改时间', width: 180, sort: true}
                     , {fixed: 'right', width: 165, align: 'center', toolbar: '#bartbl'}

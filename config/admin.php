@@ -54,7 +54,7 @@ return [
     | 路由存储目录
     |--------------------------------------------------------------------------
     */
-    'dir_route' => app_path('routes'),
+    'dir_route' => base_path('routes'),
 
     /*
    |--------------------------------------------------------------------------
@@ -79,7 +79,16 @@ return [
 
         // User tables and model.
         'users_table' => 'users',
-        'users_model' => \Ml\Models\User::class,
+        'users_model' => \App\Models\User::class,
+
+        // Role table and model.
+        'roles_table' => 'roles',
+        'roles_model' => \Spatie\Permission\Models\Role::class,
+
+        // Permission table and model.
+        'permissions_table' => 'permissions',
+        'permissions_model' => \Spatie\Permission\Models\Permission::class,
+
     ],
 
 
@@ -101,10 +110,7 @@ return [
         [
             "id" => "system",
             "text" => "系统设置",
-            "permission" => function () {
-                return true;
-            },
-//            "permission" => function(){ return Auth::user()->can('manage_system'); },
+            "permission" => function(){ return Auth::user()->can('manage_system'); },
             "icon" => "",
             "route" => "",
             "params" => [],
@@ -114,10 +120,7 @@ return [
                 [
                     "id" => "system.users",
                     "text" => "用户管理",
-                    "permission" => function () {
-                        return true;
-                    },
-//                    "permission" => function(){ return Auth::user()->can('manage_users'); },
+                    "permission" => function(){ return Auth::user()->can('manage_users'); },
                     "icon" => "",
                     "route" => "admin.users",
                     "params" => [],
@@ -151,6 +154,19 @@ return [
 
             ],
         ],
+        [
+            "id" => "logs",
+            "text" => "日志",
+            "permission" => function () {
+                return Auth::user()->can('manage_menu_logs');
+            },
+            "icon" => "",
+            "route" => "admin.logs",//优先级第二
+            "params" => [],
+            "query" => [],//优先级第三
+            "link" => "",//优先级第一
+            "children" => [],
+        ],
     ],
 
     //左侧导航栏
@@ -159,26 +175,63 @@ return [
             "id" => "products",
             "text" => "淘客商品",
             "permission" => function () {
-                return true;
+                return Auth::user()->can('manage_menu_tk');
             },
             "icon" => "",
-            "route" => "admin.dashboard",
+            "route" => "",
             "params" => [],
             "query" => [],
             "link" => "",
             "children" => [
                 [
-                    "id" => "product.dtk",
-                    "text" => "大淘客",
+                    "id" => "home.banner",
+                    "text" => "轮播图",
                     "permission" => function () {
-                        return true;
+                        return Auth::user()->can('manage_menu_tk_carousel');
                     },
                     "icon" => "",
-                    "route" => "admin.dashboard",
+                    "route" => "admin.banners",
                     "params" => [],
                     "query" => [],
                     "link" => "",
-                ]
+                ],
+                [
+                    "id" => "home.activities",
+                    "text" => "活动图",
+                    "permission" => function () {
+                        return Auth::user()->can('manage_menu_tk_activity');
+                    },
+                    "icon" => "",
+                    "route" => "admin.activities",
+                    "params" => [],
+                    "query" => [],
+                    "link" => "",
+                ],
+                [
+                    "id" => "home.navs",
+                    "text" => "商品分类",
+                    "permission" => function () {
+                        return Auth::user()->can('manage_menu_tk_category');
+                    },
+                    "icon" => "",
+                    "route" => "admin.navs",
+                    "params" => [],
+                    "query" => [],
+                    "link" => "",
+                ],
+                [
+                    "id" => "product.dtk",
+                    "text" => "淘客商品",
+                    "permission" => function () {
+                        return Auth::user()->can('manage_menu_tk_product');
+                    },
+                    "icon" => "",
+                    "route" => "admin.dtk",
+                    "params" => [],
+                    "query" => [],
+                    "link" => "",
+                ],
+
             ],
         ],
     ],
