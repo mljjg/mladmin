@@ -100,7 +100,7 @@ return [
             "permission" => function () {
                 return true;
             },
-            "icon" => "",
+            "icon" => "layui-icon layui-icon-console",
             "route" => "admin.dashboard",//优先级第二
             "params" => [],
             "query" => [],//优先级第三
@@ -111,7 +111,7 @@ return [
             "id" => "system",
             "text" => "系统设置",
             "permission" => function(){ return Auth::user()->can('manage_system'); },
-            "icon" => "",
+            "icon" => "layui-icon layui-icon-set",
             "route" => "",
             "params" => [],
             "query" => [],
@@ -121,7 +121,7 @@ return [
                     "id" => "system.users",
                     "text" => "用户管理",
                     "permission" => function(){ return Auth::user()->can('manage_users'); },
-                    "icon" => "",
+                    "icon" => "layui-icon layui-icon-user",
                     "route" => "admin.users",
                     "params" => [],
                     "query" => [],
@@ -133,7 +133,7 @@ return [
                     "permission" => function () {
                         return Auth::user()->can('manage_permissions');
                     },
-                    "icon" => "",
+                    "icon" => "layui-icon layui-icon-auz",
                     "route" => "admin.permissions",
                     "params" => [],
                     "query" => [],
@@ -145,7 +145,7 @@ return [
                     "permission" => function () {
                         return Auth::user()->can('manage_roles');
                     },
-                    "icon" => "",
+                    "icon" => "layui-icon layui-icon-group",
                     "route" => "admin.roles",
                     "params" => [],
                     "query" => [],
@@ -154,18 +154,18 @@ return [
 
             ],
         ],
+
     ],
 
     //左侧导航栏
     'menu_left' => [
-
         [
-            "id" => "logs",
+            "id" => "other",
             "text" => "其他功能",
             "permission" => function () {
                 return Auth::user()->can('manage_menu_other');
             },
-            "icon" => "",
+            "icon" => "layui-icon layui-icon-util",
             "route" => "admin.logs",//优先级第二
             "params" => [],
             "query" => [],//优先级第三
@@ -177,7 +177,7 @@ return [
                     "permission" => function () {
                         return Auth::user()->can('manage_menu_logs');
                     },
-                    "icon" => "",
+                    "icon" => "layui-icon layui-icon-file",
                     "route" => "admin.logs",//优先级第二
                     "params" => [],
                     "query" => [],//优先级第三
