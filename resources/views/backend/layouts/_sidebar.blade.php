@@ -47,7 +47,6 @@
             //判断isshow的状态
             if(isShow){
                 $(".kit-side-fold").html('<i class="layui-icon layui-icon-spread-left"></i>');
-
                 $('.layui-side.layui-bg-black').width(50); //设置宽度
                 $('.kit-side-fold i').css('margin-right', '70%');  //修改图标的位置
                 //将footer和body的宽度修改

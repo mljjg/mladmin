@@ -1,30 +1,30 @@
 <?php
 
-namespace DummyNamespace;
+namespace App\Http\Controllers\Admin;
 
+use App\Models\{Model};
 use Illuminate\Http\Request;
 use Ml\Response\Result;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
-class RolesController extends BaseController
+class {ControllerName} extends BaseController
 {
+ /**
     /**
-     * 接收的字段
+     * 字段
      * @var array
      */
-    private $fields = ['name', 'remarks'];
+    private $fields = {TableFields};
 
     /**
      * 列表
      *
      * @param Request $request
-     * @param Role $role
+     * @param {Model} ${modelVar}
      * @return mixed
      */
-    public function index(Request $request, Role $role)
+    public function index(Request $request, {Model} ${modelVar})
     {
-        return $this->backend_view('roles.index');
+        return $this->backend_view('{folder}.index');
     }
 
     /**
@@ -35,7 +35,7 @@ class RolesController extends BaseController
      */
     public function list(Request $request, Result $result)
     {
-        $query = Role::query();
+        $query = {Model}::query();
 
         //每页数量
         $per_page = $request->get('limit') ? $request->get('limit') : config('admin.paginate.limit');
@@ -53,15 +53,13 @@ class RolesController extends BaseController
 
     /**
      * 新增页面
-     * @param Role $role
+     * @param {Model} ${modelVar}
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Role $role)
+    public function create({Model} ${modelVar})
     {
-        $permissions = Permission::get()->pluck('name', 'remarks');
-        $rolePermissions = [];
 
-        return $this->backend_view('roles.create_edit', compact('role', 'permissions', 'rolePermissions'));
+        return $this->backend_view('{folder}.create_edit', compact('{modelVar}'));
     }
 
     /**
@@ -72,14 +70,9 @@ class RolesController extends BaseController
      */
     public function store(Request $request, Result $result)
     {
-
         try {
-
-            $role = Role::create($request->only($this->fields));
-            $permissions = $request->input('permission') ? $request->input('permission') : [];
-            $role->givePermissionTo($permissions);
-
-            $result->succeed($role);
+            $model = {Model}::create($request->only($this->fields));
+            $result->succeed($model);
         } catch (\Exception $exception) {
             $result->failed($exception->getMessage());
         }
@@ -91,34 +84,27 @@ class RolesController extends BaseController
     /**
      * 编辑
      *
-     * @param Role $role
+     * @param {Model} ${modelVar}
      * @return mixed
      */
-    public function edit(Role $role)
+    public function edit({Model} ${modelVar})
     {
-//        $role = Role::find($id);
 
-        $permissions = Permission::get()->pluck('name', 'remarks')->toArray();
-        $rolePermissions = $role->permissions()->pluck('name', 'name')->toArray();
-
-        return $this->backend_view('roles.create_edit', compact('role', 'permissions', 'rolePermissions'));
+        return $this->backend_view('{folder}.create_edit', compact('{modelVar}'));
     }
 
     /**
      * 更新
      *
      * @param Request $request
-     * @param Role $role
+     * @param {Model} ${modelVar}
      * @param Result $result
      * @return array
      */
-    public function update(Request $request, Role $role, Result $result)
+    public function update(Request $request, {Model} ${modelVar}, Result $result)
     {
-        $role->update($request->only($this->fields));
-        $permissions = $request->input('permission') ? $request->input('permission') : [];
-        $role->syncPermissions($permissions);
-
-        $result->succeed($role);
+        ${modelVar}->update($request->only($this->fields));
+        $result->succeed(${modelVar});
 
         return $result->toArray();
     }
@@ -126,21 +112,20 @@ class RolesController extends BaseController
     /**
      * 删除
      *
-     * @param Role $role
+     * @param {Model} ${modelVar}
      * @param Result $result
      * @return array
      * @throws \Exception
      */
-    public function destroy(Role $role, Result $result)
+    public function destroy({Model} ${modelVar}, Result $result)
     {
-
-        if (!$role) {
+        if (!${modelVar}) {
             $result->failed('已删除或不存在');
         } else {
             //执行删除
-            $del = $role->delete();
+            $del = ${modelVar}->delete();
             if ($del) {
-                $result->succeed($role);
+                $result->succeed(${modelVar});
             } else {
                 $result->failed('删除失败');
             }
@@ -160,7 +145,7 @@ class RolesController extends BaseController
     {
         $ids = $request->get('ids');
         if ($ids && is_array($ids)) {
-            $dels = Role::whereIn('id', $ids)->delete();
+            $dels = {Model}::whereIn('id', $ids)->delete();
             if ($dels > 0) {
                 $result->succeed();
             } else {
@@ -172,5 +157,15 @@ class RolesController extends BaseController
 
         return $result->toArray();
     }
+
+//## 路由：{model}
+//$router->get('{folder}', '{ControllerName}@index')->name('admin.{folder}');
+//$router->get('{folder}/create', '{ControllerName}@create')->name('admin.{folder}.create');
+//$router->get('{folder}/list', '{ControllerName}@list')->name('admin.{folder}.list');
+//$router->post('{folder}/store', '{ControllerName}@store')->name('admin.{folder}.store');
+//$router->get('{folder}/edit/{{modelVar}}', '{ControllerName}@edit')->name('admin.{folder}.edit');//隐式绑定
+//$router->post('{folder}/update/{{modelVar}}', '{ControllerName}@update')->name('admin.{folder}.update');//隐式绑定
+//$router->get('{folder}/destroy/{{modelVar}}', '{ControllerName}@destroy')->name('admin.{folder}.destroy');//隐式绑定
+//$router->post('{folder}/destroyBat', '{ControllerName}@destroyBat')->name('admin.{folder}.destroyBat');
 
 }

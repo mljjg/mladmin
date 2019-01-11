@@ -3,6 +3,8 @@
 namespace Ml\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Ml\Console\Commands\MlAdminCreateController;
+use Ml\Console\Commands\MlAdminCreateView;
 use Ml\Console\Commands\MlAdminCommand;
 use Ml\Console\Commands\MlCreateUserCommand;
 use Ml\Console\Commands\MlInstallCommand;
@@ -18,6 +20,8 @@ class MlServiceProvider extends ServiceProvider
         MlCreateUserCommand::class,
         MlResetPasswordCommand::class,
         MlInstallCommand::class,
+        MlAdminCreateController::class,
+        MlAdminCreateView::class
     ];
 
     /**
@@ -42,6 +46,7 @@ class MlServiceProvider extends ServiceProvider
             ## 配置文件
             $this->publishes([__DIR__ . '/../config/admin.php' => config_path('admin.php')], 'ml-admin-config');
             $this->publishes([__DIR__ . '/../config/site.php' => config_path('site.php')], 'ml-admin-config');
+            $this->publishes([__DIR__ . '/../config/translate.php' => config_path('translate.php')], 'ml-admin-config');
 
             ## database migration
             $this->publishes([__DIR__ . '/../database/migrations' => database_path('migrations')], 'ml-admin-migrations');

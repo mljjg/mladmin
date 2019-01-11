@@ -200,3 +200,58 @@ Laravel development server started: <http://127.0.0.1:8000>
 进入后台：
 http://127.0.0.1:8000/admin
 
+## 新增创建 控制器和view 的命令
+#### 使用类翻译扩展(<https://packagist.org/packages/shaozeming/laravel-translate>)
+**默认引入，若异常可自行引入，命令如下**
+```
+composer require shaozeming/laravel-translate -v
+php artisan vendor:publish --provider=ShaoZeMing\\LaravelTranslate\\TranslateServiceProvider
+```
+
+例如：要建一个对files 表的 增删改查操作
+1)创建控制器
+```
+php artisan mlAdmin:create-controller File File
+```
+2）找到 控制文件 app/Http/Controllers/Admin/FilesController.php
+复制 路由相关的代码到 路由文件 routes/admin.php
+```php
+//## 路由：{model}
+//$router->get('files', 'FilesController@index')->name('admin.files');
+//$router->get('files/create', 'FilesController@create')->name('admin.files.create');
+//$router->get('files/list', 'FilesController@list')->name('admin.files.list');
+//$router->post('files/store', 'FilesController@store')->name('admin.files.store');
+//$router->get('files/edit/{file}', 'FilesController@edit')->name('admin.files.edit');//隐式绑定
+//$router->post('files/update/{file}', 'FilesController@update')->name('admin.files.update');//隐式绑定
+//$router->get('files/destroy/{file}', 'FilesController@destroy')->name('admin.files.destroy');//隐式绑定
+//$router->post('files/destroyBat', 'FilesController@destroyBat')->name('admin.files.destroyBat');
+```
+
+3）创建前端视图代码
+```
+php artisan mlAdmin:create-view File 文件列表
+```
+会生成文件：
+resources/views/backend/files/create_edit.blade.php
+resources/views/backend/files/index.blade.php
+
+4）配置导航菜单 config/admin.php
+
+```php
+ 'menu_left' =>[
+     [
+         "id" => "files",
+         "text" => "文件管理",
+         "permission" => function () {
+             return true;
+         },
+         "icon" => "layui-icon layui-icon-file",
+         "route" => "admin.files",//优先级第二
+         "params" => [],
+         "query" => [],//优先级第三
+         "link" => "",//优先级第一
+     ],
+ ]
+
+
+```

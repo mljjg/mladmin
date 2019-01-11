@@ -9,6 +9,12 @@ use Spatie\Permission\Models\Permission;
 class PermissionsController extends BaseController
 {
     /**
+     * 接收的字段
+     * @var array
+     */
+    private $fields = ['name', 'remarks'];
+
+    /**
      * 列表
      *
      * @param Request $request
@@ -65,7 +71,7 @@ class PermissionsController extends BaseController
     public function store(Request $request, Result $result)
     {
         try {
-            $permission = Permission::create($request->only(['name', 'remarks']));
+            $permission = Permission::create($request->only($this->fields));
             $result->succeed($permission);
         } catch (\Exception $exception) {
             $result->failed($exception->getMessage());
@@ -78,13 +84,12 @@ class PermissionsController extends BaseController
     /**
      * 编辑
      *
-     * @param $id
+     * @param Permission $permission
      * @return mixed
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit($id)
+    public function edit(Permission $permission)
     {
-        $permission = Permission::find($id);
+//        $permission = Permission::find($id);
 //        $this->authorize('update', $permission);
         return $this->backend_view('permissions.create_edit', compact('permission'));
     }
@@ -93,15 +98,15 @@ class PermissionsController extends BaseController
      * 更新
      *
      * @param Request $request
-     * @param $id
+     * @param Permission $permission
      * @param Result $result
      * @return array
      */
-    public function update(Request $request, $id, Result $result)
+    public function update(Request $request, Permission $permission, Result $result)
     {
-        $permission = Permission::find($id);
+//        $permission = Permission::find($id);
 
-        $permission->fill($request->all());
+        $permission->fill($request->only($this->fields));
         $upd = $permission->save();
         if ($upd)
             $result->succeed($permission);
@@ -114,14 +119,15 @@ class PermissionsController extends BaseController
     /**
      * 删除
      *
-     * @param $id
+     * @param Permission $permission
      * @param Result $result
      * @return array
+     * @throws \Exception
      */
-    public function destroy($id, Result $result)
+    public function destroy(Permission $permission, Result $result)
     {
 
-        $permission = Permission::find($id);
+//        $permission = Permission::find($id);
 //        if (\request()->user()->cant('delete', $permission)) {
 //            return $result->failed('没有权限')->toArray();
 //        }
