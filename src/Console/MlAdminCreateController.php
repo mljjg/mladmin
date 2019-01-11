@@ -5,6 +5,8 @@ namespace Ml\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Schema;
+use ShaoZeMing\Translate\Exceptions\TranslateException;
+use Translate;
 
 class MlAdminCreateController extends Command
 {
@@ -83,7 +85,7 @@ class MlAdminCreateController extends Command
         $file = $dir . "/{$fileName}.php";
         if (is_file($file)) {
             $this->error('<info>' . $fileName . ' file was Existed:</info> ' . str_replace(base_path(), '', $file));
-            $ask = $this->ask('File is not exist ! need rewrite it[Y/N] ?');
+            $ask = $this->ask('Need rewrite it[Y/N] ?');
             if (strtoupper($ask[0]) !== 'Y') {
                 exit('give up rewrite !');
             }
@@ -99,40 +101,38 @@ class MlAdminCreateController extends Command
 
     }
 
+
     /**
-     * 根据 model 的名称字符串获取字段集合的字符串
-     *
-     * @param string $model
-     * @return string
+     * 字段数据
+     * @param $columns
+     * @return array
      */
-    public function getModelFields(string $model)
+    public function getModelFieldsMapStr($columns)
     {
-        $columnsStr = '[]';
-        try {
-            $modelNew = app('App\\Models\\' . $model);
-            $columns = $modelNew->getFillable();
-            if (!count($columns)) {
-                $table = $modelNew->getTable();
-                $columns = Schema::getColumnListing($table);
-            }
-            $excludeFields = ['id', 'created_at', 'updated_at', 'deleted_at'];
-            $needFields = [];//需要的字段
-            if (is_array($columns)) {
-                foreach ($columns as $field) {
-                    if (!in_array($field, $excludeFields)) {
-                        $needFields[] = $field;
-                    }
+
+        $excludeFields = ['id' => 'ID', 'created_at' => '创建时间', 'updated_at' => '更新时间', 'deleted_at' => '删除时间'];
+        $needFields = [];//需要的字段(一般指可手动更新字段)
+        $mapFields = [];//全部字段的字典
+        if (is_array($columns)) {
+            foreach ($columns as $column) {
+                $field = $column['column'];
+                $columnComment = $column['columnComment'];
+
+                if (!isset($excludeFields[$field])) {
+                    $needFields[] = $field;
+                } else {
+                    $columnComment = $excludeFields[$field];//若是指定的字段，直接采用设置的含义
                 }
+
+                $mapFields[] = '"' . $field . '"=>"' . $columnComment . '"';
             }
-
-
-            $columnsStr = count($columns) > 0 ? "['" . implode("','", $needFields) . "']" : "[]";
-
-        } catch (\Exception $exception) {
-            $this->info($exception->getMessage());
         }
 
-        return $columnsStr;
+        $columnsStr = count($needFields) > 0 ? "['" . implode("','", $needFields) . "']" : "[]";
+        $columnsMapStr = count($mapFields) > 0 ? "[" . implode(",", $mapFields) . "]" : "[]";
+
+
+        return ['fieldsStr' => $columnsStr, 'fieldsMpaStr' => $columnsMapStr];
     }
 
     /**
@@ -146,7 +146,12 @@ class MlAdminCreateController extends Command
     public function realContent($fileName, $model)
     {
         ##用于替换 {TableFields} 的值
-        $columnsStr = $this->getModelFields($model);
+        $columns = $this->getModelFields($model);
+
+        ##
+        $fieldsResult = $this->getModelFieldsMapStr($columns);
+        $fieldsStr = $fieldsResult['fieldsStr'];
+        $fieldsMpaStr = $fieldsResult['fieldsMpaStr'];
 
         ## 读取模板内容
         $tmpPath = __DIR__ . "/stubs/Templates/controller/tmp.stub";
@@ -160,13 +165,99 @@ class MlAdminCreateController extends Command
 
         ## 替换内容 生成控制器
         $search = [
-            '{ControllerName}', '{Model}', '{modelVar}', '{folder}', '{TableFields}'
+            '==ControllerName==', '==Model==', '==modelVar==', '==folder==', '==Fields==', '==FieldsMap=='
         ];
 
         $replace = [
-            $fileName, ucfirst($model), lcfirst($model), str_plural(lcfirst($model)), $columnsStr
+            $fileName, ucfirst($model), lcfirst($model), str_plural(lcfirst($model)), $fieldsStr, $fieldsMpaStr
         ];
 
         return str_replace($search, $replace, $contents);
+    }
+
+
+    /**
+     * 返回模型的所有字段
+     * @param string $model
+     * @param string $prefix
+     * @return array
+     */
+    function getModelFields(string $model, $prefix = 'App\\Models\\')
+    {
+        $result = [];
+        try {
+
+            $modelNew = app($prefix . $model);
+            $table = $modelNew->getTable();
+            // 获取整张表的详细信息
+            $columns = \DB::getDoctrineSchemaManager()->listTableDetails($table);
+            $columnFields = Schema::getColumnListing($table);
+            if (is_array($columnFields)) {
+                foreach ($columnFields as $column) {
+                    // 获取注释
+                    $columnComment = $columns->getColumn($column)->getComment();
+                    if (empty($columnComment)) {
+                        //则使用翻译
+                        $columnComment = $this->fieldMeans($column);
+                    }
+
+                    $result[] = ['column' => $column, 'columnComment' => $columnComment];
+
+                }
+            }
+
+        } catch (\Exception $exception) {
+            //mysql5.7 字段类型 enum,set等会不支持，采用翻译
+            $this->error($exception->getMessage());
+            $this->info('采用翻译获取字段含义');
+        }
+
+        //结果集为空，翻译字段含义
+        if (empty($result)) {
+            $columnFields = Schema::getColumnListing($table);
+            if (is_array($columnFields)) {
+                foreach ($columnFields as $column) {
+                    //字段（列）含义
+                    $columnName = $this->fieldMeans($column);
+                    //组装数据
+                    $result[] = ['column' => $column, 'columnComment' => $columnName];
+
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * 字段含义
+     * @param $column
+     * @return mixed|string
+     */
+    public function fieldMeans($column)
+    {
+        $columnName = strtoupper($column);
+        try {
+            $columnName = $this->translateEnToZh($column);
+        } catch (\Exception $exception) {
+            if ($exception instanceof TranslateException) {
+                $columnName = strtoupper($column);
+            }
+        }
+        return $columnName;
+    }
+
+    /**
+     * @param string $words
+     * @return mixed
+     * @throws \ShaoZeMing\Translate\Exceptions\TranslateException
+     */
+    public function translateEnToZh(string $words)
+    {
+        // 更换翻译语言 可选语言请看配置文件中可定义的几种
+        $from = "en";
+        $to = "zh";
+        $result = Translate::setFromAndTo($from, $to)->translate($words);
+        $this->info(__FUNCTION__ . '：' . $words . ' --> ' . $result);
+        return $result;
     }
 }

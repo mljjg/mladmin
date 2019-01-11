@@ -2,29 +2,37 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\{Model};
+use App\Models\==Model==;
 use Illuminate\Http\Request;
 use Ml\Response\Result;
 
-class {ControllerName} extends BaseController
+class ==ControllerName== extends BaseController
 {
- /**
+
     /**
      * 字段
+     *
      * @var array
      */
-    private $fields = {TableFields};
+    private $fields = ==Fields==;
+
+    /**
+     * 数据字典
+     *
+     * @var array
+     */
+    private $fieldsMap = ==FieldsMap==;
 
     /**
      * 列表
      *
      * @param Request $request
-     * @param {Model} ${modelVar}
+     * @param ==Model== $==modelVar==
      * @return mixed
      */
-    public function index(Request $request, {Model} ${modelVar})
+    public function index(Request $request, ==Model== $==modelVar==)
     {
-        return $this->backend_view('{folder}.index');
+        return $this->backend_view('==folder==.index');
     }
 
     /**
@@ -35,7 +43,7 @@ class {ControllerName} extends BaseController
      */
     public function list(Request $request, Result $result)
     {
-        $query = {Model}::query();
+        $query = ==Model==::query();
 
         //每页数量
         $per_page = $request->get('limit') ? $request->get('limit') : config('admin.paginate.limit');
@@ -53,13 +61,13 @@ class {ControllerName} extends BaseController
 
     /**
      * 新增页面
-     * @param {Model} ${modelVar}
+     * @param ==Model== $==modelVar==
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create({Model} ${modelVar})
+    public function create(==Model== $==modelVar==)
     {
 
-        return $this->backend_view('{folder}.create_edit', compact('{modelVar}'));
+        return $this->backend_view('==folder==.create_edit', compact('==modelVar=='));
     }
 
     /**
@@ -71,7 +79,7 @@ class {ControllerName} extends BaseController
     public function store(Request $request, Result $result)
     {
         try {
-            $model = {Model}::create($request->only($this->fields));
+            $model = ==Model==::create($request->only($this->fields));
             $result->succeed($model);
         } catch (\Exception $exception) {
             $result->failed($exception->getMessage());
@@ -84,27 +92,27 @@ class {ControllerName} extends BaseController
     /**
      * 编辑
      *
-     * @param {Model} ${modelVar}
+     * @param ==Model== $==modelVar==
      * @return mixed
      */
-    public function edit({Model} ${modelVar})
+    public function edit(==Model== $==modelVar==)
     {
 
-        return $this->backend_view('{folder}.create_edit', compact('{modelVar}'));
+        return $this->backend_view('==folder==.create_edit', compact('==modelVar=='));
     }
 
     /**
      * 更新
      *
      * @param Request $request
-     * @param {Model} ${modelVar}
+     * @param ==Model== $==modelVar==
      * @param Result $result
      * @return array
      */
-    public function update(Request $request, {Model} ${modelVar}, Result $result)
+    public function update(Request $request, ==Model== $==modelVar==, Result $result)
     {
-        ${modelVar}->update($request->only($this->fields));
-        $result->succeed(${modelVar});
+        $==modelVar==->update($request->only($this->fields));
+        $result->succeed($==modelVar==);
 
         return $result->toArray();
     }
@@ -112,20 +120,20 @@ class {ControllerName} extends BaseController
     /**
      * 删除
      *
-     * @param {Model} ${modelVar}
+     * @param ==Model== $==modelVar==
      * @param Result $result
      * @return array
      * @throws \Exception
      */
-    public function destroy({Model} ${modelVar}, Result $result)
+    public function destroy(==Model== $==modelVar==, Result $result)
     {
-        if (!${modelVar}) {
+        if (!$==modelVar==) {
             $result->failed('已删除或不存在');
         } else {
             //执行删除
-            $del = ${modelVar}->delete();
+            $del = $==modelVar==->delete();
             if ($del) {
-                $result->succeed(${modelVar});
+                $result->succeed($==modelVar==);
             } else {
                 $result->failed('删除失败');
             }
@@ -145,7 +153,7 @@ class {ControllerName} extends BaseController
     {
         $ids = $request->get('ids');
         if ($ids && is_array($ids)) {
-            $dels = {Model}::whereIn('id', $ids)->delete();
+            $dels = ==Model==::whereIn('id', $ids)->delete();
             if ($dels > 0) {
                 $result->succeed();
             } else {
@@ -158,14 +166,14 @@ class {ControllerName} extends BaseController
         return $result->toArray();
     }
 
-//## 路由：{model}
-//$router->get('{folder}', '{ControllerName}@index')->name('admin.{folder}');
-//$router->get('{folder}/create', '{ControllerName}@create')->name('admin.{folder}.create');
-//$router->get('{folder}/list', '{ControllerName}@list')->name('admin.{folder}.list');
-//$router->post('{folder}/store', '{ControllerName}@store')->name('admin.{folder}.store');
-//$router->get('{folder}/edit/{{modelVar}}', '{ControllerName}@edit')->name('admin.{folder}.edit');//隐式绑定
-//$router->post('{folder}/update/{{modelVar}}', '{ControllerName}@update')->name('admin.{folder}.update');//隐式绑定
-//$router->get('{folder}/destroy/{{modelVar}}', '{ControllerName}@destroy')->name('admin.{folder}.destroy');//隐式绑定
-//$router->post('{folder}/destroyBat', '{ControllerName}@destroyBat')->name('admin.{folder}.destroyBat');
+//## 路由：==Model==
+//$router->get('==folder==', '==ControllerName==@index')->name('admin.==folder==');
+//$router->get('==folder==/create', '==ControllerName==@create')->name('admin.==folder==.create');
+//$router->get('==folder==/list', '==ControllerName==@list')->name('admin.==folder==.list');
+//$router->post('==folder==/store', '==ControllerName==@store')->name('admin.==folder==.store');
+//$router->get('==folder==/edit/{==modelVar==}', '==ControllerName==@edit')->name('admin.==folder==.edit');//隐式绑定
+//$router->post('==folder==/update/{==modelVar==}', '==ControllerName==@update')->name('admin.==folder==.update');//隐式绑定
+//$router->get('==folder==/destroy/{==modelVar==}', '==ControllerName==@destroy')->name('admin.==folder==.destroy');//隐式绑定
+//$router->post('==folder==/destroyBat', '==ControllerName==@destroyBat')->name('admin.==folder==.destroyBat');
 
 }

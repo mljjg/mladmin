@@ -69,14 +69,22 @@ class MlAdminCreateView extends Command
         foreach ($files as $fileName => $fileTitle) {
             $file = $dir . "/{$fileName}.blade.php";
             if (is_file($file)) {
-                $this->error('<info>' . $fileName . ' file was Existed:</info> ' . str_replace(base_path(), '', $file));
-                continue;
+                if (is_file($file)) {
+                    $this->error('<info>' . $fileName . ' file was Existed:</info> ' . str_replace(base_path(), '', $file));
+                    $ask = $this->ask('Need rewrite it[Y/N] ?');
+                    if (strtoupper($ask[0]) !== 'Y') {
+                        $this->info('give up rewrite ' . $fileName);
+                        continue;
+                    }
+                }
             }
+
+            $content = $this->realContent($fileName, $model, $folder, $title);
 
             $this->info($file);
             $this->filesystem->put(
                 $file,
-                $this->realContent($fileName, $model, $folder,$title)
+                $content
             );
 
             $this->line('<info>' . $fileName . '(' . $fileTitle . ') file was created:</info> ' . str_replace(base_path(), '', $file));
@@ -94,7 +102,7 @@ class MlAdminCreateView extends Command
      * @return mixed
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function realContent($fileName, $model, $folder,$title)
+    public function realContent($fileName, $model, $folder, $title)
     {
         ##用于替换 {TableFields} 的值
         $columns = $this->getModelFields($model);
@@ -102,16 +110,11 @@ class MlAdminCreateView extends Command
         $templateFormItem = '';
         $modelVar = lcfirst($model);
         $excludeFields = ['id', 'created_at', 'updated_at', 'deleted_at'];
-        foreach ($columns as $column) {
-            $columnName = strtoupper($column);
-            //翻译字段
-            try {
-                $columnName = $this->translateEnToZh($column);
-            } catch (\Exception $exception) {
-                if ($exception instanceof TranslateException) {
-                    $columnName = strtoupper($column);
-                }
-            }
+//        $excludeFields = ['id' => 'ID', 'created_at' => '创建时间', 'updated_at' => '更新时间', 'deleted_at' => '删除时间'];
+
+        foreach ($columns as $columnMap) {
+            $column = $columnMap['column'];
+            $columnName = $columnMap['columnComment'];
 
             if (!in_array($column, $excludeFields)) {
                 $templateCols .= "                    , {field: '{$column}', title: '{$columnName}', width: 150}" . PHP_EOL;
@@ -120,7 +123,7 @@ class MlAdminCreateView extends Command
              <div class="layui-form-item">
                     <label class="layui-form-label">{$columnName}</label>
                     <div class="layui-input-block">
-                        <input type="text" name="{$column}" required lay-verify="required" placeholder="请输入 {$column}" autocomplete="off" class="layui-input" value="{{ old('{$column}',$==modelVar==->{$column}) }}">
+                        <input type="text" name="{$column}" required lay-verify="required" placeholder="请输入{$columnName}" autocomplete="off" class="layui-input" value="{{ old('{$column}',$==modelVar==->{$column}) }}">
                     </div>
                 </div>
 Item;
@@ -141,11 +144,11 @@ Item;
 
         ## 替换内容 生成控制器
         $search = [
-            '==TemplateCols==', '==item==', '==modelVar==', '==folder==','==Title=='
+            '==TemplateCols==', '==item==', '==modelVar==', '==folder==', '==Title=='
         ];
 
         $replace = [
-            $templateCols, $templateFormItem, $modelVar, $folder,$title
+            $templateCols, $templateFormItem, $modelVar, $folder, $title
         ];
 
         return str_replace($search, $replace, $contents);
@@ -153,26 +156,73 @@ Item;
 
     /**
      * 返回模型的所有字段
-     *
      * @param string $model
      * @param string $prefix
-     * @return array|string
+     * @return array
      */
     function getModelFields(string $model, $prefix = 'App\\Models\\')
     {
+        $result = [];
         try {
+
             $modelNew = app($prefix . $model);
-            $columns = $modelNew->getFillable();
-            if (!count($columns)) {
-                $table = $modelNew->getTable();
-                $columns = Schema::getColumnListing($table);
+            $table = $modelNew->getTable();
+            // 获取整张表的详细信息
+            $columns = \DB::getDoctrineSchemaManager()->listTableDetails($table);
+            $columnFields = Schema::getColumnListing($table);
+            if (is_array($columnFields)) {
+                foreach ($columnFields as $column) {
+                    // 获取注释
+                    $columnComment = $columns->getColumn($column)->getComment();
+                    if (empty($columnComment)) {
+                        //则使用翻译
+                        $columnComment = $this->fieldMeans($column);
+                    }
+
+                    $result[] = ['column' => $column, 'columnComment' => $columnComment];
+
+                }
             }
 
         } catch (\Exception $exception) {
-            return $exception->getMessage();
+            //mysql5.7 字段类型 enum,set等会不支持，采用翻译
+            $this->error($exception->getMessage());
+            $this->info('采用翻译获取字段含义');
         }
 
-        return $columns;
+
+        //结果集为空，翻译字段含义
+        if (empty($result)) {
+            $columnFields = Schema::getColumnListing($table);
+            if (is_array($columnFields)) {
+                foreach ($columnFields as $column) {
+                    //字段（列）含义
+                    $columnName = $this->fieldMeans($column);
+                    //组装数据
+                    $result[] = ['column' => $column, 'columnComment' => $columnName];
+
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * 字段含义
+     * @param $column
+     * @return mixed|string
+     */
+    public function fieldMeans($column)
+    {
+        $columnName = strtoupper($column);
+        try {
+            $columnName = $this->translateEnToZh($column);
+        } catch (\Exception $exception) {
+            if ($exception instanceof TranslateException) {
+                $columnName = strtoupper($column);
+            }
+        }
+        return $columnName;
     }
 
     /**
