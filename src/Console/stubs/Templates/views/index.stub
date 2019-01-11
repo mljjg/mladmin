@@ -14,18 +14,20 @@
     </div>
     <hr class="layui-bg-green">
     <div style="padding: 10px;">
-        <div class="layui-form-item">
-                <div class="layui-inline">
-                    <div class="layui-input-inline">
+      <div class="layui-form">
+            <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
 
+                        </div>
                     </div>
-                </div>
-                <div class="layui-inline">
-                    <div class="layui-input-inline">
-                        <button class="layui-btn" id="search" lay-submit lay-filter="formSearch">查询</button>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <button class="layui-btn" id="search" lay-submit lay-filter="formSearch">查询</button>
+                        </div>
                     </div>
-                </div>
 
+            </div>
         </div>
         <table id="tbl" lay-filter="tblFilter"></table>
         <script type="text/html" id="bartbl">
