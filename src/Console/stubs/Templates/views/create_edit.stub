@@ -10,7 +10,7 @@
 
 @section('content')
     <div style="padding: 15px;margin-top: 10px;">
-        <div class="layui-col-md8 layui-col-md-offset2">
+        <div class="layui-col-md6 layui-col-md-offset3">
             <div class="layui-form">
                 {{--防跨越--}}
                 {{ csrf_field() }}
@@ -62,8 +62,9 @@
                             layer.alert(msg, function (index) {
                                 layer.close(index);
 
-                                let url = "{{route('admin.==folder==')}}";
-                                window.open(url, '_self');
+                                window.history.go(-1);
+                                //let url = "{{route('admin.==folder==')}}";
+                                //window.open(url, '_self');
 
                             });
 

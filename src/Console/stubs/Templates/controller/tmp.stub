@@ -48,7 +48,11 @@ class ==ControllerName== extends BaseController
         //查询条件处理
         if ($queryFields = $request->get('queryFields')) {
             foreach ($queryFields as $field => $value) {
-                $query = $query->where($field, $value);
+                if (strpos($field, 'name') !== false) {
+                    $query = $query->where($field, 'like', '%' . $value . '%');
+                } else {
+                    $query = $query->where($field, $value);
+                }
             }
         }
 
@@ -118,9 +122,12 @@ class ==ControllerName== extends BaseController
      */
     public function update(Request $request, ==Model== $==modelVar==, Result $result)
     {
-        $==modelVar==->update($request->only($this->fields));
-        $result->succeed($==modelVar==);
-
+        try {
+            $==modelVar==->update($request->only($this->fields));
+            $result->succeed($==modelVar==);
+        } catch (\Exception $exception) {
+            $result->failed($exception->getMessage());
+        }
         return $result->toArray();
     }
 

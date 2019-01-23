@@ -1,4 +1,4 @@
-{
+    {
     "name": "jjg/admin",
     "description": "A package for laravel backend dev start",
     "require": {

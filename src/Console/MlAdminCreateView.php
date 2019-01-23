@@ -117,7 +117,7 @@ class MlAdminCreateView extends Command
             $columnName = $columnMap['columnComment'];
 
             if (!in_array($column, $excludeFields)) {
-                $templateCols .= "                    , {field: '{$column}', title: '{$columnName}', width: 150}" . PHP_EOL;
+                $templateCols .= "                    , {field: '{$column}', title: '{$columnName}', width: 120}" . PHP_EOL;
 
                 $templateFormItem .= <<<Item
              <div class="layui-form-item">

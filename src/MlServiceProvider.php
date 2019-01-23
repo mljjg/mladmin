@@ -4,6 +4,8 @@ namespace Ml\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Ml\Console\Commands\MlAdminCreateController;
+use Ml\Console\Commands\MlAdminCreateMigration;
+use Ml\Console\Commands\MlAdminCreateMVCCommand;
 use Ml\Console\Commands\MlAdminCreateView;
 use Ml\Console\Commands\MlAdminCommand;
 use Ml\Console\Commands\MlCreateUserCommand;
@@ -21,7 +23,9 @@ class MlServiceProvider extends ServiceProvider
         MlResetPasswordCommand::class,
         MlInstallCommand::class,
         MlAdminCreateController::class,
-        MlAdminCreateView::class
+        MlAdminCreateView::class,
+        MlAdminCreateMigration::class,
+        MlAdminCreateMVCCommand::class
     ];
 
     /**

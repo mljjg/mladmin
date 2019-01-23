@@ -15,7 +15,7 @@ class MlAdminCreateController extends Command
      * php artisan create:my-controller
      * @var string
      */
-    protected $signature = 'mlAdmin:create-controller {controller} {model?}';
+    protected $signature = 'mlAdmin:create-controller {name} {model?}';
 
     /**
      * The console command description.
@@ -64,11 +64,11 @@ class MlAdminCreateController extends Command
     {
         //
 
-        $this->controllerName = $this->argument('controller') ? $this->argument('controller') : null;
+        $this->controllerName = $this->argument('name') ? $this->argument('name') : null;
         $this->modelName = $this->argument('model') ? $this->argument('model') : '';
 
         ## 创建控制器目录
-        $dir = config('admin.dir_controller');//app_path('Http/Controllers/Admin');
+        $dir = config('admin.dir_controller');
         if (!is_dir($dir))
             $this->filesystem->makeDirectory($dir, 0755, true, true);
 

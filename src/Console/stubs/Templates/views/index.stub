@@ -14,16 +14,19 @@
     </div>
     <hr class="layui-bg-green">
     <div style="padding: 10px;">
-      <div class="layui-form">
+         <div class="layui-form">
             <div class="layui-form-item">
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="id" placeholder="ID查询">
+                            </div>
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
                             <button class="layui-btn" id="search" lay-submit lay-filter="formSearch">查询</button>
+                            <button class="layui-btn layui-btn-primary" id="clear">清空</button>
                         </div>
                     </div>
 
@@ -105,8 +108,9 @@
         }
 
         //渲染table
-        layui.use('table', function () {
+        layui.use(['table','form'], function () {
             let table = layui.table;
+             let form = layui.form;
             //执行一个table 实例
             table.render({
                 elem: '#tbl'
@@ -218,6 +222,15 @@
                 });
 
             });
+
+              //清空 条件
+            $("#clear").on('click', function () {
+                layer.msg('清空条件');
+                window.location.reload();
+                // $("#queryForm").find('input[type=text],select,input[type=hidden]').each(function () {
+                //     $(this).val();
+                // })
+            })
 
         });
     </script>
