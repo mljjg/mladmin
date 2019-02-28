@@ -10,7 +10,7 @@
 
 @section('content')
     <div style="padding: 15px;margin-top: 10px;">
-        <div class="layui-col-md6 layui-col-md-offset3">
+        <div class="layui-col-md8 layui-col-md-offset2 layui-col-lg6 layui-col-lg-offset3">
             <div class="layui-form">
                 {{--防跨越--}}
                 {{ csrf_field() }}
@@ -48,23 +48,13 @@
 
                         if (!result.success) {
                             layer.msg(msg);
-                            // layer.open({
-                            //     type: 1,
-                            //     anim: 0,
-                            //     title: msg,
-                            //     area: ['50%', '70%'],
-                            //     btn: ['关闭'],
-                            //     content: JSON.stringify(result)
-                            // });
 
                         } else {
                             // layer.msg(msg);
                             layer.alert(msg, function (index) {
                                 layer.close(index);
 
-                                window.history.go(-1);
-                                //let url = "{{route('admin.==folder==')}}";
-                                //window.open(url, '_self');
+                                window.location.href = "{{ url('admin/categories/edit') }}/" + result.model.id;
 
                             });
 

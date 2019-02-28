@@ -48,21 +48,20 @@ class ==ControllerName== extends BaseController
         //查询条件处理
         if ($queryFields = $request->get('queryFields')) {
             foreach ($queryFields as $field => $value) {
-                if (strpos($field, 'name') !== false) {
-                    $query = $query->where($field, 'like', '%' . $value . '%');
-                } else {
-                    $query = $query->where($field, $value);
-                }
+               if(!empty($value)){
+                   if (strpos($field, 'name') !== false) {
+                        $query->where($field, 'like', '%' . $value . '%');
+                   } else {
+                       $query->where($field, $value);
+                   }
+               }
             }
         }
 
         //每页数量
         $per_page = $request->get('limit') ? $request->get('limit') : config('admin.paginate.limit');
-        if ($per_page > 100) {
-            //限制最大100
-            $per_page = 100;
-        }
-        $query = $query->orderBy('id', 'desc');
+        $per_page = $per_page > 100 ? 100 : intval($per_page);//限制最大100
+        $query->orderBy('id', 'desc');
         $data = $query->paginate($per_page);
         $data->withPath($request->fullUrl());
         $result->succeed($data);

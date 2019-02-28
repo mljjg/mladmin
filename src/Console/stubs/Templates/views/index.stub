@@ -63,8 +63,8 @@
                     });
 
                 } else {
-                    // layer.msg(msg);
-                    layer.alert(msg);
+                    layer.msg(msg);
+                    //layer.alert(msg);
                     obj.del(); //删除对应行（tr）的DOM结构
                 }
             });
