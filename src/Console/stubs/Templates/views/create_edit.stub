@@ -11,17 +11,23 @@
 @section('content')
     <div style="padding: 15px;margin-top: 10px;">
         <div class="layui-col-md8 layui-col-md-offset2 layui-col-lg6 layui-col-lg-offset3">
-            <div class="layui-form">
-                {{--防跨越--}}
-                {{ csrf_field() }}
-                ==item==
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="formCommit">立即提交</button>
-                        {{--<button type="reset" class="layui-btn layui-btn-primary">重置</button>--}}
+         <fieldset class="layui-elem-field">
+            <legend>详情 - {{$title}}</legend>
+            <div class="layui-field-box">
+
+                <div class="layui-form">
+                    {{--防跨越--}}
+                    {{ csrf_field() }}
+                    ==item==
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="formCommit">立即提交</button>
+                            {{--<button type="reset" class="layui-btn layui-btn-primary">重置</button>--}}
+                        </div>
                     </div>
                 </div>
             </div>
+         </fieldset>
         </div>
 
     </div>
@@ -54,7 +60,7 @@
                             layer.alert(msg, function (index) {
                                 layer.close(index);
 
-                                window.location.href = "{{ url('admin/categories/edit') }}/" + result.model.id;
+                                window.location.href = "{{ url('admin/==folder==/edit') }}/" + result.model.id;
 
                             });
 
