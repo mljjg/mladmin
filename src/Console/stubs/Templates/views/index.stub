@@ -117,6 +117,7 @@
                 // , height: 312
                 , url: "{{route('admin.==folder==.list')}}"  //数据接口
                 , title: "{{$title}}"
+                , limit: localStorage.getItem('table.limit') ? localStorage.getItem('table.limit') : 20
                 , page: true //开启分页
                 , toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
                 // , totalRow: true //开启合计行
@@ -129,6 +130,11 @@
                     , {fixed: 'right', width: 165, align: 'center', toolbar: '#bartbl'}
                 ]]
                 , parseData: function (res) {
+                    if (res.model) {
+                        if (res.model.per_page) {
+                            localStorage.setItem('table.limit', res.model.per_page);
+                        }
+                    }
                     return {
                         "code": res.success ? 0 : 1, //解析接口状态
                         "msg": res.message, //解析提示文本
