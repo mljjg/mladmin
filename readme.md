@@ -88,17 +88,6 @@ use Illuminate\Auth\AuthenticationException;
 
 ```
 
-
-#### 依赖 spatie/laravel-permission 实现用户权限控制 (已自动引入，不需要操作)
-```
-https://github.com/spatie/laravel-permission
-
-composer require spatie/laravel-permission
-
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="config"
-
-```
-
 ####  策略类注册（需要手动添加）
 ```
 <?php

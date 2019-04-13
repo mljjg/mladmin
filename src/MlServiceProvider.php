@@ -3,11 +3,11 @@
 namespace Ml\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Ml\Console\Commands\MlAdminCommand;
 use Ml\Console\Commands\MlAdminCreateController;
 use Ml\Console\Commands\MlAdminCreateMigration;
 use Ml\Console\Commands\MlAdminCreateMVCCommand;
 use Ml\Console\Commands\MlAdminCreateView;
-use Ml\Console\Commands\MlAdminCommand;
 use Ml\Console\Commands\MlCreateUserCommand;
 use Ml\Console\Commands\MlInstallCommand;
 use Ml\Console\Commands\MlResetPasswordCommand;
@@ -53,7 +53,12 @@ class MlServiceProvider extends ServiceProvider
             $this->publishes([__DIR__ . '/../config/translate.php' => config_path('translate.php')], 'ml-admin-config');
 
             ## database migration
-            $this->publishes([__DIR__ . '/../database/migrations' => database_path('migrations')], 'ml-admin-migrations');
+            $dirMigrations = __DIR__ . '/../database/migrations';
+            $migrations = glob($dirMigrations . DIRECTORY_SEPARATOR . '*.stub');
+            foreach ($migrations as $migration) {
+                $fileName = pathinfo($migration, PATHINFO_FILENAME);
+                $this->publishes([$migration => database_path('migrations').DIRECTORY_SEPARATOR."{$fileName}"], 'ml-admin-migrations');
+            }
         }
 
     }
