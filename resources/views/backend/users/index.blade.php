@@ -116,7 +116,7 @@
                             if (d.sex === 1) {
                                 txt = '<span style="color: #1E9FFF;">男<i class="layui-icon layui-icon-male" style="font-size: 20px; color: #5FB878;"></i></span>';
                             } else if (d.sex === 0) {
-                                txt = '<span style="color: #FF5722;">女<i class="layui-icon layui-icon-male" style="font-size: 20px; color: #FF5722;"></i></span>';
+                                txt = '<span style="color: #FF5722;">女<i class="layui-icon layui-icon-female" style="font-size: 20px; color: #FF5722;"></i></span>';
                             }
                             return txt;
                         }
