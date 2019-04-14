@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Ml\Console\Commands\MlAdminCommand;
 use Ml\Console\Commands\MlAdminCreateController;
 use Ml\Console\Commands\MlAdminCreateMigration;
+use Ml\Console\Commands\MlAdminCreateModel;
 use Ml\Console\Commands\MlAdminCreateMVCCommand;
 use Ml\Console\Commands\MlAdminCreateView;
 use Ml\Console\Commands\MlCreateUserCommand;
@@ -22,6 +23,7 @@ class MlServiceProvider extends ServiceProvider
         MlCreateUserCommand::class,
         MlResetPasswordCommand::class,
         MlInstallCommand::class,
+        MlAdminCreateModel::class,
         MlAdminCreateController::class,
         MlAdminCreateView::class,
         MlAdminCreateMigration::class,
@@ -57,7 +59,7 @@ class MlServiceProvider extends ServiceProvider
             $migrations = glob($dirMigrations . DIRECTORY_SEPARATOR . '*.stub');
             foreach ($migrations as $migration) {
                 $fileName = pathinfo($migration, PATHINFO_FILENAME);
-                $this->publishes([$migration => database_path('migrations').DIRECTORY_SEPARATOR."{$fileName}"], 'ml-admin-migrations');
+                $this->publishes([$migration => database_path('migrations') . DIRECTORY_SEPARATOR . "{$fileName}"], 'ml-admin-migrations');
             }
         }
 

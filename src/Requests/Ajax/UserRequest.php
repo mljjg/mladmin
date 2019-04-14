@@ -25,11 +25,25 @@ class UserRequest extends BaseRequest
             ];
         } elseif ($this->routeIs('admin.users.update')) {
             return [
-                'name' => 'required|between:1,25|unique:users,name,' . request('user')->id,//|regex:/^[A-Za-z0-9\-\_]+$/
-                'email' => 'required|email|unique:users,email,' . request('user')->id,
+                'name' => 'required|between:1,25|unique:users,name,' . request('id'),//|regex:/^[A-Za-z0-9\-\_]+$/
+                'email' => 'required|email|unique:users,email,' . request('id'),
             ];
         }
-
-
     }
+
+    /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'name.unique' => '用户昵称已存在！',
+            'name.between' => '用户昵称长度应1-25个字符！',
+            'email.required_without' => '邮箱或者用户名必须至少填写一个！'
+        ];
+    }
+
+
 }

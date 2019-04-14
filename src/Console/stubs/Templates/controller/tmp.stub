@@ -112,6 +112,18 @@ class ==ControllerName== extends BaseController
     }
 
     /**
+     * 详情查看
+     *
+     * @param ==Model== $==modelVar==
+     * @return mixed
+     */
+    public function detail(==Model== $==modelVar==)
+    {
+
+        return $this->backend_view('==folder==.detail', compact('==modelVar=='));
+    }
+
+    /**
      * 更新
      *
      * @param Request $request
@@ -184,9 +196,10 @@ class ==ControllerName== extends BaseController
 //$router->get('==folder==/create', '==ControllerName==@create')->name('admin.==folder==.create');
 //$router->get('==folder==/list', '==ControllerName==@list')->name('admin.==folder==.list');
 //$router->post('==folder==/store', '==ControllerName==@store')->name('admin.==folder==.store');
-//$router->get('==folder==/edit/{==modelVar==}', '==ControllerName==@edit')->name('admin.==folder==.edit');//隐式绑定
-//$router->post('==folder==/update/{==modelVar==}', '==ControllerName==@update')->name('admin.==folder==.update');//隐式绑定
-//$router->get('==folder==/destroy/{==modelVar==}', '==ControllerName==@destroy')->name('admin.==folder==.destroy');//隐式绑定
-//$router->post('==folder==/destroyBat', '==ControllerName==@destroyBat')->name('admin.==folder==.destroyBat');
+//$router->get('==folder==/edit/{==modelVar==}', '==ControllerName==@edit')->name('admin.==folder==.edit');//编辑页面
+//$router->get('==folder==/detail/{==modelVar==}', '==ControllerName==@detail')->name('admin.==folder==.detail');//详情页面
+//$router->post('==folder==/update/{==modelVar==}', '==ControllerName==@update')->name('admin.==folder==.update');//更新请求
+//$router->get('==folder==/destroy/{==modelVar==}', '==ControllerName==@destroy')->name('admin.==folder==.destroy');//单个删除请求
+//$router->post('==folder==/destroyBat', '==ControllerName==@destroyBat')->name('admin.==folder==.destroyBat');//批量删除请求
 
 }

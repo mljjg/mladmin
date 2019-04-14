@@ -56,13 +56,21 @@ return [
     */
     'dir_route' => base_path('routes'),
 
+
     /*
-   |--------------------------------------------------------------------------
-   | 控制器存储目录
-   |--------------------------------------------------------------------------
-   */
+    |--------------------------------------------------------------------------
+    | 控制器存储目录
+    |--------------------------------------------------------------------------
+    */
     'dir_controller' => app_path('Http/Controllers/Admin'),
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | ORM存储目录
+    |--------------------------------------------------------------------------
+    */
+    'dir_model' => app_path('Models'),
 
     /*
    |--------------------------------------------------------------------------
@@ -110,7 +118,9 @@ return [
         [
             "id" => "system",
             "text" => "系统设置",
-            "permission" => function(){ return Auth::user()->can('manage_system'); },
+            "permission" => function () {
+                return Auth::user()->can('manage_system');
+            },
             "icon" => "layui-icon layui-icon-set",
             "route" => "",
             "params" => [],
@@ -120,7 +130,9 @@ return [
                 [
                     "id" => "system.users",
                     "text" => "用户管理",
-                    "permission" => function(){ return Auth::user()->can('manage_users'); },
+                    "permission" => function () {
+                        return Auth::user()->can('manage_users');
+                    },
                     "icon" => "layui-icon layui-icon-user",
                     "route" => "admin.users",
                     "params" => [],
@@ -154,11 +166,6 @@ return [
 
             ],
         ],
-
-    ],
-
-    //左侧导航栏
-    'menu_left' => [
         [
             "id" => "other",
             "text" => "其他功能",
@@ -182,9 +189,14 @@ return [
                     "params" => [],
                     "query" => [],//优先级第三
                     "link" => "",//优先级第一
-                    "children" => [],
                 ]
             ],
         ],
+
+    ],
+
+    //左侧导航栏
+    'menu_left' => [
+
     ],
 ];

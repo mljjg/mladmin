@@ -64,6 +64,7 @@ class MlAdminCreateView extends Command
         $files = [
             'index' => '列表 blade文件',
             'create_edit' => '添加和编辑 blade文件',
+            'detail' => '详情页面 blade文件',
         ];
 
         foreach ($files as $fileName => $fileTitle) {

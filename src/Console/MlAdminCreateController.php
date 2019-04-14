@@ -124,9 +124,10 @@ class MlAdminCreateController extends Command
                     $columnComment = $excludeFields[$field];//若是指定的字段，直接采用设置的含义
                 }
 
-                $mapFields[] = '"' . $field . '"=>"' . $columnComment . '"';
+                $mapFields[] = "'" . $field . "'=>'" . $columnComment . "'";
             }
         }
+        $this->info(print_r($mapFields,true));
 
         $columnsStr = count($needFields) > 0 ? "['" . implode("','", $needFields) . "']" : "[]";
         $columnsMapStr = count($mapFields) > 0 ? "[" . implode(",", $mapFields) . "]" : "[]";
@@ -147,7 +148,6 @@ class MlAdminCreateController extends Command
     {
         ##用于替换 {TableFields} 的值
         $columns = $this->getModelFields($model);
-
         ##
         $fieldsResult = $this->getModelFieldsMapStr($columns);
         $fieldsStr = $fieldsResult['fieldsStr'];
@@ -179,16 +179,13 @@ class MlAdminCreateController extends Command
     /**
      * 返回模型的所有字段
      * @param string $model
-     * @param string $prefix
      * @return array
      */
-    function getModelFields(string $model, $prefix = 'App\\Models\\')
+    function getModelFields(string $model)
     {
         $result = [];
         try {
-
-            $modelNew = app($prefix . $model);
-            $table = $modelNew->getTable();
+            $table = str_plural(snake_case($model, '_'));//表名 《= str_plural snake_case =》 模型名
             // 获取整张表的详细信息
             $columns = \DB::getDoctrineSchemaManager()->listTableDetails($table);
             $columnFields = Schema::getColumnListing($table);

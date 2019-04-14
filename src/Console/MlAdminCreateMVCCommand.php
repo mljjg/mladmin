@@ -11,7 +11,7 @@ class MlAdminCreateMVCCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mlAdmin:create-mvc';
+    protected $signature = 'mlAdmin:create-mvc {model?}{process? : quick|normal}';
 
     /**
      * The console command description.
@@ -38,47 +38,49 @@ class MlAdminCreateMVCCommand extends Command
     public function handle()
     {
         //可选的值
+        $model = $this->argument('model') ?? null;
+        $process = $this->argument('process') ?? null;
         $choices = [];
-        $model = $this->ask('please enter model name: like "User"');
+        if (empty($model))
+            $model = $this->ask('please enter model name, example: table name is "users" input model name "User"');
+
         $this->line('The model name : ' . $model);
         $choices[] = $model;
 
-        ## 创建 migration
-        if ($this->confirm('would you need create migration?[y/n]')) {
-            $this->call('mlAdmin:create-migration', ['name' => $model]);
 
-            ## 创建表
-            if ($this->confirm('would you need exec migrate to build table in database ?[y/n]'))
-                $this->call('migrate');//执行php artisan migrate
-        } else {
-            $this->error("give up create migration");
-        }
+        if (empty($process))
+            $process = $this->choice('If you choice process', ['quick', 'normal']);
+
+
+        $this->info('process:' . $process);
+        $quickTag = $process == 'quick';
 
         ## 创建模型
-        if ($this->confirm('would you sure create  model [' . $model . ']? [y/n]')) {
-
-            $modelFolder = $this->choice('What model folder ? default: Models ', ['Models', ''], 'Models');
-            $this->line('the folder you choice : ' . $modelFolder);
-            $this->call('make:model', ['name' => empty($modelFolder) ? ucfirst($model) : $modelFolder . '/' . ucfirst($model)]);
-
+        if ($quickTag || $this->confirm('would you sure create  model [' . $model . ']? [y/n]')) {
+//            $this->call('make:model', ['name' => empty($modelFolder) ? ucfirst($model) : $modelFolder . '/' . ucfirst($model)]);
+            $this->call('mlAdmin:create-model', ['name' => $model]);
         } else {
             $this->error("give up create model");
         }
 
 
         ## 创建 控制器 mlAdmin:create-controller
-        if ($this->confirm('would you need create a controller?[y/n]')) {
-            if (!empty($model)) {
-                if ($this->confirm('use model name as controller name. model:' . $model.'?[y/n]')) {
-                    $controller = $model;
+        if ($quickTag || $this->confirm('would you need create a controller?[y/n]')) {
+            if (!$quickTag) {
+                if (!empty($model)) {
+                    if ($this->confirm('use model name as controller name. model:' . $model . '?[y/n]')) {
+                        $controller = $model;
+                    }
                 }
-            }
 
-            ## 若没有model 或 未选择使用model名，则提示输入控制器名
-            if (empty($controller)) {
-                $controller = $this->ask('please enter controller name:like "User" or "UserController"');
-                if (in_array($controller, $choices))
-                    $choices[] = $controller;
+                ## 若没有model 或 未选择使用model名，则提示输入控制器名
+                if (empty($controller)) {
+                    $controller = $this->ask('please enter controller name:like "User" or "UserController"');
+                    if (in_array($controller, $choices))
+                        $choices[] = $controller;
+                }
+            } else {
+                $controller = $model;
             }
 
             ## 创建控制器 命令
@@ -88,15 +90,22 @@ class MlAdminCreateMVCCommand extends Command
         }
 
         ## 创建视图
-        if ($this->confirm('would you need create a view?[y/n]')) {
-            $view = $this->choice('choose view name:', $choices);
-            if ($view) {
-                ## 创建视图 mlAdmin:create-view
-                $this->call('mlAdmin:create-view', ['model' => $view]);
-            }
+        if ($quickTag) {
+            ## 创建视图 mlAdmin:create-view
+            $view = $model;
+            $this->call('mlAdmin:create-view', ['model' => $view]);
         } else {
-            $this->error('give up create view');
+            if ($this->confirm('would you need create a view?[y/n]')) {
+                $view = $this->choice('choose view name:', $choices);
+                if ($view) {
+                    ## 创建视图 mlAdmin:create-view
+                    $this->call('mlAdmin:create-view', ['model' => $view]);
+                }
+            } else {
+                $this->error('give up create view');
+            }
         }
+
 
     }
 }

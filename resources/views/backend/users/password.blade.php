@@ -32,7 +32,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">新密码</label>
                         <div class="layui-input-inline">
-                            <input type="password" name="password" required lay-verify="required" placeholder="请输入旧密码"
+                            <input type="password" name="password" required lay-verify="required" placeholder="请输入新密码"
                                    autocomplete="off" class="layui-input" value="{{ old('old_password') }}">
                         </div>
                     </div>

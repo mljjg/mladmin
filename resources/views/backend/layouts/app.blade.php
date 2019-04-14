@@ -15,10 +15,10 @@
 @include('backend.layouts._top')
 
 <!-- 侧边导航栏 -->
-    @include('backend.layouts._sidebar')
+    {{--    @include('backend.layouts._sidebar')--}}
 
 
-    <div class="layui-body">
+    <div class="layui-body" style="left: 0">
         <!-- 内容主体区域 -->
         <div style="padding: 15px;">
             <div class="content-header" style="margin-bottom: 5px">
@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <div class="layui-footer" style="background-color: white">
+    <div class="layui-footer" style="background-color: white;left: 0">
         <!-- 底部固定区域 -->
         @include('backend.layouts._footer');
     </div>

@@ -42,10 +42,10 @@ class BaseRequest extends FormRequest
     {
 
         if ($this->ajax()) {
-            $errors = $validator->errors()->messages();
+            $errors = $validator->errors();
             $result = new Result();
-            $result->failed('参数校验失败');
-            $result->setModel($errors);
+            $result->failed('参数校验失败[' . $errors->first() . ']');
+            $result->setModel($errors->messages());
 
             throw new HttpResponseException(response($result->toArray(), 200));
         } else {
