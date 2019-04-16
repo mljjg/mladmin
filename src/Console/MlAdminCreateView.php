@@ -109,6 +109,10 @@ class MlAdminCreateView extends Command
         $columns = $this->getModelFields($model);
         $templateCols = '';
         $templateFormItem = '';
+        $DummyDetailTable = '';
+        $DummyDetailTableColgroup = '';
+        $DummyDetailTableThead = '';
+        $DummyDetailTableThbody = '';
         $modelVar = lcfirst($model);
         $excludeFields = ['id', 'created_at', 'updated_at', 'deleted_at'];
 //        $excludeFields = ['id' => 'ID', 'created_at' => '创建时间', 'updated_at' => '更新时间', 'deleted_at' => '删除时间'];
@@ -124,14 +128,34 @@ class MlAdminCreateView extends Command
              <div class="layui-form-item">
                     <label class="layui-form-label">{$columnName}</label>
                     <div class="layui-input-block">
-                        <input type="text" name="{$column}" required lay-verify="required" placeholder="请输入{$columnName}" autocomplete="off" class="layui-input" value="{{ old('{$column}',$==modelVar==->{$column}) }}">
+                        <input type="text" name="{$column}" required lay-verify="required" placeholder="请输入{$columnName}" autocomplete="off" class="layui-input" value="{{ old('{$column}',$=DummyModel=->{$column}) }}">
                     </div>
                 </div>
 Item;
+                $DummyDetailTableThead .= "<th>{$columnName}</th>";
+                $DummyDetailTableThbody .= " <td>{{ old('{$column}',$=DummyModel=->{$column}) }}</td>";
 
             }
-
         }
+
+        $DummyDetailTableColgroup = str_repeat(' <col width="100">', count($columns));
+        $DummyDetailTable .= <<<HTML
+         <table class="layui-table">
+              <colgroup>
+              {$DummyDetailTableColgroup}
+              </colgroup>
+              <thead>
+                    <tr>
+                    {$DummyDetailTableThead}
+                    </tr>
+               </thead>
+               <tbody>
+                   <tr>
+                     {$DummyDetailTableThbody}
+                   </tr>
+               </tbody>
+</table>
+HTML;
 
         ## 读取模板内容
         $tmpPath = __DIR__ . "/stubs/Templates/views/{$fileName}.stub";
@@ -145,12 +169,14 @@ Item;
 
         ## 替换内容 生成控制器
         $search = [
-            '==TemplateCols==', '==item==', '==modelVar==', '==folder==', '==Title=='
+            'DummyTemplateCols', 'DummyItemDiv', 'DummyDetailTable', '=DummyModel=', 'DummyFolder', 'DummyTitle'
         ];
 
         $replace = [
-            $templateCols, $templateFormItem, $modelVar, $folder, $title
+            $templateCols, $templateFormItem, $DummyDetailTable, $modelVar, $folder, $title
         ];
+
+        $this->info(print_r($replace, true));
 
         return str_replace($search, $replace, $contents);
     }

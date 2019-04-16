@@ -1,10 +1,10 @@
 @extends('backend.layouts.app')
 
-@section('title', $title = $==modelVar==->id ? '编辑' : '添加' )
+@section('title', $title = $=DummyModel=->id ? '编辑' : '添加' )
 
 @section('breadcrumb')
     <a>基础资料</a>
-    <a href="{{ route('admin.==folder==') }}">==Title==</a>
+    <a href="{{ route('admin.DummyFolder') }}">DummyTitle</a>
     <a><cite>{{$title}}</cite></a>
 @endsection
 
@@ -18,7 +18,7 @@
                 <div class="layui-form">
                     {{--防跨越--}}
                     {{ csrf_field() }}
-                    ==item==
+                    DummyItemDiv
                     <div class="layui-form-item">
                         <div class="layui-input-block">
                             <button class="layui-btn" lay-submit lay-filter="formCommit">立即提交</button>
@@ -42,7 +42,7 @@
 
             //监听提交
             form.on('submit(formCommit)', function (data) {
-                let url = "{{$==modelVar==->id?route('admin.==folder==.update',$==modelVar==->id):route('admin.==folder==.store')}}";
+                let url = "{{$=DummyModel=->id?route('admin.DummyFolder.update',$=DummyModel=->id):route('admin.DummyFolder.store')}}";
 
                 $.ajax({
                     type: 'POST',
@@ -60,7 +60,7 @@
                             layer.alert(msg, function (index) {
                                 layer.close(index);
 
-                                window.location.href = "{{ url('admin/==folder==/edit') }}/" + result.model.id;
+                                window.location.href = "{{ url('admin/DummyFolder/edit') }}/" + result.model.id;
 
                             });
 
