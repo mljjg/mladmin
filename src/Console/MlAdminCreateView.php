@@ -176,7 +176,7 @@ HTML;
             $templateCols, $templateFormItem, $DummyDetailTable, $modelVar, $folder, $title
         ];
 
-        $this->info(print_r($replace, true));
+//        $this->info(print_r($replace, true));
 
         return str_replace($search, $replace, $contents);
     }

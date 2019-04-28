@@ -120,6 +120,7 @@
         layui.use(['table','form'], function () {
             let table = layui.table;
              let form = layui.form;
+             let page = parseInt(sessionStorage.getItem('page.DummyFolder.current_page'));
             //执行一个table 实例
             table.render({
                 elem: '#tbl'
@@ -127,7 +128,10 @@
                 , url: "{{route('admin.DummyFolder.list')}}"  //数据接口
                 , title: "{{$title}}"
                 , limit: localStorage.getItem('table.limit') ? localStorage.getItem('table.limit') : 20
-                , page: true //开启分页
+                , page: {
+                   curr: page,
+                   limits: [5, 10, 15, 20, 50, 60, 70, 80, 90, 100],
+                }
                 , toolbar: '#toolbarDemo'  //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
                 , defaultToolbar: ['filter', 'print']//自由配置头部工具栏右侧的图标 'exports',
                 , cols: [[ //表头
@@ -142,6 +146,9 @@
                     if (res.model) {
                         if (res.model.per_page) {
                             localStorage.setItem('table.limit', res.model.per_page);
+                        }
+                         if (res.model.current_page) {
+                            sessionStorage.setItem('page.DummyFolder.current_page', res.model.current_page);
                         }
                     }
                     return {
